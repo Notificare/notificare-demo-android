@@ -1,4 +1,5 @@
-app-android
-===========
+notificare-demo-android
+=========
+Demo for GCM, Tags, Location Services and OAuth2 features of Notificare
 
-Starting point for a android demo app
+##Setup
