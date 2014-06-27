@@ -1,0 +1,17 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+
+	<style name="WindowTitleBackground" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/title_background</item>
+    </style>
+
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light"> 
+        <item name="actionBarStyle">@style/WindowTitleBackground</item>
+        <item name="windowActionBar">true</item>
+	</style>
+
+</resources>

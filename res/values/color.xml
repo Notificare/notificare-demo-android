@@ -1,0 +1,11 @@
+<resources>
+	<color name="title_background">#FFFFFF</color>
+	<color name="black">#000000</color>
+	<color name="grey">#EAEAEA</color>
+	<color name="lightblue">#f4fafa</color>
+	<color name="red">#fe0000</color>
+	<color name="yellow">#cd7916</color>
+	<color name="seagreen">#2ea297</color>
+	<color name="darkred">#bd1f2d</color>
+	<color name="bsred">#ff0000</color>
+</resources>
