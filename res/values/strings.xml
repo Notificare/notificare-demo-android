@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Demo App</string>
-    <string-array name="planets_array">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+    <string-array name="navigation_labels">
+        <item>Home</item>
+        <item>Locations</item>
+        <item>Contact</item>
+        <item>Sign in</item>
+        <item>Settings</item>
+    </string-array>
+	<string-array name="navigation_urls">
+        <item>http://notifica.re</item>
+        <item>func:Map</item>
+        <item>http://notifica.re/contact</item>
+        <item>func:Login</item>
+        <item>func:Settings</item>
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_websearch">Web search</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <string name="hint_email">email</string>
+    <string name="hint_pass">password</string>
+    <string name="hint_name">name</string>
+    <string name="hint_confirm_pass">confirm password</string>
+    
+    <string name="button_sign_in">sign in</string>
+    <string name="button_sign_up">sign in</string>
+    <string name="button_forget_pass">recover password</string>
+    <string name="button_reset_pass">reset password</string>
+    
 </resources>

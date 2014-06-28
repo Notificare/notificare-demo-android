@@ -1,7 +1,8 @@
 package re.notifica.app;
 
-import java.util.Locale;
+import java.util.StringTokenizer;
 
+import re.notifica.Notificare;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -10,28 +11,35 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.model.*;
+
 public class MainActivity extends Activity {
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private String[] mPlanetTitles;
+    private String[] navigationLabels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +47,14 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mTitle = mDrawerTitle = getTitle();
-        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
+        navigationLabels = getResources().getStringArray(R.array.navigation_labels);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, navigationLabels));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
@@ -129,18 +137,71 @@ public class MainActivity extends Activity {
     }
 
     private void selectItem(int position) {
-        // update the main content by replacing fragments
-        Fragment fragment = new PlanetFragment();
-        Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-        fragment.setArguments(args);
 
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    	String values [] =  getResources().getStringArray(R.array.navigation_urls);
+    	StringTokenizer tokens = new StringTokenizer(values[position], ":");
+    	String first = tokens.nextToken();
+    	String second = tokens.nextToken();
+
+		if (first.equals("http") || second.equals("https")) {
+
+            Fragment fragment = new WebViewFragment();
+            Bundle args = new Bundle();
+            args.putInt(WebViewFragment.ARG_NAVIGATION_NUMBER, position);
+            fragment.setArguments(args);
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+		}else {
+			if(second.equals("Map")){
+				
+				GoogleMapOptions options = new GoogleMapOptions();
+				options.mapType(GoogleMap.MAP_TYPE_NORMAL)
+				.compassEnabled(true)
+				.rotateGesturesEnabled(true)
+				.scrollGesturesEnabled(true)
+				.tiltGesturesEnabled(true)
+				.zoomGesturesEnabled(true)
+				.zoomControlsEnabled(true);
+
+				MapFragment mMapFragment = MapFragment.newInstance(options);
+				android.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+				fragmentTransaction.add(R.id.content_frame, mMapFragment);
+				fragmentTransaction.commit();
+				getFragmentManager().executePendingTransactions();
+				
+//				//@TODO: Add markers based on fences being monitored 
+				GoogleMap map = mMapFragment.getMap();
+				LatLng sydney = new LatLng(-33.867, 151.206);
+				map.setMyLocationEnabled(true);
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
+				map.addMarker(new MarkerOptions()
+				.title("Sydney")
+				.snippet("The most populous city in Australia.")
+				.position(sydney));
+
+			} else if (second.equals("Settings")) {
+				//Notificare.shared().setUserPreferencesResource(userPreferencesResource);;
+			} else {
+				
+				if(Notificare.shared().isLoggedIn()){
+					Fragment fragment = new UserProfileFragment();
+					Bundle args = new Bundle();
+					args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, position);
+					fragment.setArguments(args);
+					FragmentManager fragmentManager = getFragmentManager();
+					fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+				} else {
+					Intent a = new Intent(MainActivity.this, SignInActivity.class);
+					startActivity(a);
+				}
+			}
+		}
+
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
+        setTitle(navigationLabels[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
@@ -169,28 +230,60 @@ public class MainActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+ 
     /**
-     * Fragment that appears in the "content_frame", shows a planet
+     * Fragment with a WebView
      */
-    public static class PlanetFragment extends Fragment {
-        public static final String ARG_PLANET_NUMBER = "planet_number";
+    public static class WebViewFragment extends Fragment {
+        public static final String ARG_NAVIGATION_NUMBER = "navigation_pos";
 
-        public PlanetFragment() {
+        public WebViewFragment() {
             // Empty constructor required for fragment subclasses
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_planet, container, false);
-            int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            String planet = getResources().getStringArray(R.array.planets_array)[i];
+            View rootView = inflater.inflate(R.layout.fragment_webview, container, false);
+            int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
+            String label = getResources().getStringArray(R.array.navigation_labels)[i];
+            String url = getResources().getStringArray(R.array.navigation_urls)[i];
 
-            int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-                            "drawable", getActivity().getPackageName());
-            ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
-            getActivity().setTitle(planet);
+            WebView webView =  (WebView) rootView.findViewById(R.id.webView);
+            
+            webView.loadUrl(url);
+            webView.setWebViewClient(new WebViewClient() {
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+            });
+            getActivity().setTitle(label);
             return rootView;
         }
     }
+    
+    
+    /**
+     * Fragment with a User profile
+     */
+    public static class UserProfileFragment extends Fragment {
+        public static final String ARG_NAVIGATION_NUMBER = "navigation_pos";
+
+        public UserProfileFragment() {
+            // Empty constructor required for fragment subclasses
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_user_profile, container, false);
+            int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
+            String label = getResources().getStringArray(R.array.navigation_labels)[i];
+            //String url = getResources().getStringArray(R.array.navigation_urls)[i];
+            getActivity().setTitle(label);
+            return rootView;
+        }
+    }
+
 }
