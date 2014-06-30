@@ -58,6 +58,12 @@
         <activity
             android:name="re.notifica.app.ResetPassActivity"
             android:label="@string/title_reset_pass" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/resetpassword/52a0844bd6d66f243d0061b8" />
+            </intent-filter>
         </activity>
         <activity
             android:name="re.notifica.app.BeaconsActivity"

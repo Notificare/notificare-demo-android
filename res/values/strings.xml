@@ -5,7 +5,7 @@
         <item>Home</item>
         <item>Locations</item>
         <item>Contact</item>
-        <item>Sign in</item>
+        <item>User Profile</item>
         <item>Settings</item>
     </string-array>
 	<string-array name="navigation_urls">
@@ -20,6 +20,10 @@
     <string name="action_websearch">Web search</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
     
+    <string name="loader_signin">Authenticating...</string>
+    <string name="loader_connection">Contacting server...</string>
+    <string name="loader">Loading...</string>
+    
     <string name="title_sign_in">Sign in</string>
     <string name="title_sign_up">Sign up</string>
     <string name="title_lost_pass">Lost password</string>
@@ -32,9 +36,23 @@
     <string name="hint_name">name</string>
     <string name="hint_confirm_pass">confirm password</string>
     
-    <string name="button_sign_in">sign in</string>
-    <string name="button_sign_up">sign up</string>
-    <string name="button_lost_pass">recover password</string>
-    <string name="button_reset_pass">reset password</string>
+    <string name="button_sign_in">Sign in</string>
+    <string name="button_sign_up">Sign up</string>
+    <string name="button_lost_pass">Recover password</string>
+    <string name="button_reset_pass">Reset password</string>
+
+    <string name="error_sign_in">Invalid credentials</string>
+    <string name="error_sign_up">Please fill in all fields</string>
+    <string name="error_lost_pass">Please fill in a valid email</string>
+    <string name="error_reset_pass">Please fill in a new password</string>
+    <string name="error_invalid_name">Please insert your name</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_pass_too_short">Password is too short</string>
+    <string name="error_pass_not_match">Confirm the same password twice</string>
+    <string name="error_email_not_found">No account found for that email</string>
     
+    <string name="success_account_created">Account created successfully. You can now sign in.</string>
+    <string name="success_email_found">Account found. Please check your mailbox for more information.</string>
+	<string name="success_reset_pass">Password changed successfully. You can now sign in.</string>
+   
 </resources>

@@ -1,13 +1,17 @@
 package re.notifica.app;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import re.notifica.Notificare;
+import re.notifica.NotificareCallback;
+import re.notifica.NotificareError;
+import re.notifica.model.NotificareUser;
 import re.notifica.ui.UserPreferencesActivity;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
@@ -21,11 +25,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,7 +42,7 @@ import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+
 
 public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyLocationChangeListener {
 
@@ -92,6 +99,32 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
         if (savedInstanceState == null) {
             selectItem(0);
         }
+        
+        Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
+
+			@Override
+			public void onError(NotificareError arg0) {
+
+			}
+
+			@Override
+			public void onSuccess(NotificareUser arg0) {
+				Notificare.shared().setUserId(arg0.getUserId());
+				Notificare.shared().registerDevice(Notificare.shared().getDeviceId(), arg0.getUserId(), arg0.getUserName(), new NotificareCallback<String>() {
+
+					@Override
+					public void onSuccess(String result) {
+
+					}
+
+					@Override
+					public void onError(NotificareError error) {
+
+					}
+				});
+			}
+        	
+        });
     }
 
     @Override
@@ -186,7 +219,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 		        
 			} else if (second.equals("Settings")) {
 				
-				Notificare.shared().setUserPreferencesResource(R.xml.notificare_preferences);
+				Notificare.shared().setUserPreferencesResource(R.xml.preferences);
 				startActivity(new Intent(MainActivity.this, UserPreferencesActivity.class));
 				
 			} else {
@@ -198,6 +231,18 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 					fragment.setArguments(args);
 					FragmentManager fragmentManager = getFragmentManager();
 					fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+					
+//					Fragment fragment2 = new AccessTokenFragment();
+//					Bundle args2 = new Bundle();
+//					args.putInt(AccessTokenFragment.ARG_NAVIGATION_NUMBER, position);
+//					fragment.setArguments(args2);
+//					FragmentManager fragmentManager2 = getFragmentManager();
+//					fragmentManager2.beginTransaction().replace(R.id.content_frame, fragment2).commit();
+//					
+//					fragmentManager.beginTransaction().add(R.id.content_frame, fragment2).commit();
+					// update selected item and title, then close the drawer
+			        mDrawerList.setItemChecked(position, true);
+			        setTitle(navigationLabels[position]);
 				} else {
 					Intent a = new Intent(MainActivity.this, SignInActivity.class);
 					startActivity(a);
@@ -255,7 +300,8 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
             String url = getResources().getStringArray(R.array.navigation_urls)[i];
 
             WebView webView =  (WebView) rootView.findViewById(R.id.webView);
-            
+            WebSettings webSettings = webView.getSettings();
+            webSettings.setJavaScriptEnabled(true);
             webView.loadUrl(url);
             webView.setWebViewClient(new WebViewClient() {
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -286,6 +332,45 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
             int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
             String label = getResources().getStringArray(R.array.navigation_labels)[i];
             //String url = getResources().getStringArray(R.array.navigation_urls)[i];
+            final ListView userProfileList =  (ListView) rootView.findViewById(R.id.userProfileList);
+            
+            Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
+				
+				@Override
+				public void onSuccess(NotificareUser result) {
+					
+		            final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+		           
+		            HashMap<String, String> email = new HashMap<String, String>();
+		            email.put("label", "email");
+		            email.put("value", result.getUserId());
+		    		list.add(email);
+		    		
+		    		HashMap<String, String> name = new HashMap<String, String>();
+		    		name.put("label", "name");
+		    		name.put("value", result.getUserName());
+		    		list.add(name);
+		    		
+		    		HashMap<String, String> access_token = new HashMap<String, String>();
+		    		access_token.put("label", "email token");
+		    		access_token.put("value", result.getAccessToken());
+		    		list.add(access_token);
+		    		
+		            ListAdapter adapter = new UserProfileAdapter(getActivity(), list);
+		            userProfileList.setAdapter(adapter);
+				}
+				
+				@Override
+				public void onError(NotificareError error) {
+					if (error.getCode() == NotificareError.FORBIDDEN || error.getCode() == NotificareError.UNAUTHORIZED) {
+						Intent intent = new Intent(Notificare.shared().getApplicationContext(), SignInActivity.class);
+						startActivity(intent);
+					} else {
+						Toast.makeText(Notificare.shared().getApplicationContext(), "Error fetching user details", Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+            
             getActivity().setTitle(label);
             return rootView;
         }

@@ -15,31 +15,38 @@
 	        android:layout_width="fill_parent" 
 	        android:layout_height="wrap_content"
 	        android:background="@android:color/white" >
-	        
+
+			<TextView android:id="@+id/infoText"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_margin="10dp"
+              android:layout_marginTop="20dp"
+              android:layout_marginBottom="20dp"
+              android:text="" />
+
 			<EditText 
 				android:id="@+id/name"
 				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:background="#EAEAEA"
-				android:padding="5dp"
+				android:layout_height="wrap_content"
+				android:layout_margin="10dp"
+				android:layout_marginTop="20dp"
 				android:hint="@string/hint_name" >
 			</EditText>
 			
 			<EditText 
 				android:id="@+id/email"
 				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:background="#EAEAEA"
-				android:padding="5dp"
+				android:layout_height="wrap_content"
+				android:layout_margin="10dp"
+				android:inputType="textEmailAddress"
 				android:hint="@string/hint_email" >
 			</EditText>
 			
 			<EditText 
 				android:id="@+id/pass"
 				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:background="#EAEAEA"
-				android:padding="5dp"
+				android:layout_height="wrap_content"
+				android:layout_margin="10dp"
 				android:inputType="textPassword"
 				android:hint="@string/hint_pass" >
 			</EditText>
@@ -47,9 +54,8 @@
 			<EditText 
 				android:id="@+id/confirmPass"
 				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:background="#EAEAEA"
-				android:padding="5dp"
+				android:layout_height="wrap_content"
+				android:layout_margin="10dp"
 				android:inputType="textPassword"
 				android:hint="@string/hint_confirm_pass" >
 			</EditText>
@@ -60,7 +66,7 @@
 				android:layout_height="48dp"
 				android:textColor="#FFFFFF"
 				android:background="#3d3b37"
-				android:padding="5dp"
+				android:layout_margin="10dp"
 				android:text="@string/button_sign_up"
 				android:textSize="20dp"
 				 />

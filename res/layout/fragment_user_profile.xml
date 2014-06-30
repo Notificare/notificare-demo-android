@@ -3,13 +3,14 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-	<EditText 
-		android:id="@+id/email"
+	<ListView
+		android:id="@+id/userProfileList"
 		android:layout_width="fill_parent"
-		android:layout_height="48dp"
-		android:background="#EAEAEA"
-		android:padding="5dp"
-		android:hint="@string/hint_email" >
-	</EditText>
+		android:layout_height="wrap_content"
+		android:divider="@null"
+		android:scaleType="fitXY"
+		android:dividerHeight="0dp"
+		android:drawSelectorOnTop="false">
+	</ListView>
 
 </RelativeLayout>
