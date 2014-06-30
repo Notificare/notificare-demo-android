@@ -16,12 +16,7 @@ public class AppBaseApplication extends Application {
 	    Notificare.shared().setIntentReceiver(AppReceiver.class);
 	    // Enable this device for push notifications
 	    Notificare.shared().enableNotifications();
-	    
-	    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-	    if(preferences.contains("pref_key_location_services") && preferences.getBoolean("pref_key_location_services", true)) {
-	    	Notificare.shared().enableLocationUpdates();
-	    }
+	    Notificare.shared().enableLocationUpdates();
 	    
 	    //Notificare.shared().setAutoCancel(false);
 	}

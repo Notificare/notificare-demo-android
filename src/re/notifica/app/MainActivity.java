@@ -3,18 +3,18 @@ package re.notifica.app;
 import java.util.StringTokenizer;
 
 import re.notifica.Notificare;
+import re.notifica.ui.UserPreferencesActivity;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,11 +28,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.*;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyLocationChangeListener {
 
+	public GoogleMap map;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -99,7 +106,7 @@ public class MainActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_ibeacons).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -112,16 +119,9 @@ public class MainActivity extends Activity {
         }
         // Handle action buttons
         switch(item.getItemId()) {
-        case R.id.action_websearch:
-            // create intent to perform web search for this planet
-            Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-            intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
-            // catch event that there's no activity to handle intent
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-            }
+        case R.id.action_ibeacons:
+        	Intent a = new Intent(MainActivity.this, BeaconsActivity.class);
+			startActivity(a);
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -152,6 +152,10 @@ public class MainActivity extends Activity {
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
+            // update selected item and title, then close the drawer
+            mDrawerList.setItemChecked(position, true);
+            setTitle(navigationLabels[position]);
+            
 		}else {
 			if(second.equals("Map")){
 				
@@ -171,17 +175,20 @@ public class MainActivity extends Activity {
 				getFragmentManager().executePendingTransactions();
 				
 //				//@TODO: Add markers based on fences being monitored 
-				GoogleMap map = mMapFragment.getMap();
-				LatLng sydney = new LatLng(-33.867, 151.206);
+				map = mMapFragment.getMap();
 				map.setMyLocationEnabled(true);
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
-				map.addMarker(new MarkerOptions()
-				.title("Sydney")
-				.snippet("The most populous city in Australia.")
-				.position(sydney));
+				map.setOnMapLoadedCallback(this);
+				map.setOnMyLocationChangeListener(this);
 
+		        // update selected item and title, then close the drawer
+		        mDrawerList.setItemChecked(position, true);
+		        setTitle(navigationLabels[position]);
+		        
 			} else if (second.equals("Settings")) {
-				//Notificare.shared().setUserPreferencesResource(userPreferencesResource);;
+				
+				Notificare.shared().setUserPreferencesResource(R.xml.notificare_preferences);
+				startActivity(new Intent(MainActivity.this, UserPreferencesActivity.class));
+				
 			} else {
 				
 				if(Notificare.shared().isLoggedIn()){
@@ -199,9 +206,7 @@ public class MainActivity extends Activity {
 		}
 
 
-        // update selected item and title, then close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(navigationLabels[position]);
+
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
@@ -285,5 +290,20 @@ public class MainActivity extends Activity {
             return rootView;
         }
     }
+
+	@Override
+	public void onMapLoaded() {
+		// TODO Add markers based on 
+		
+	}
+
+	@Override
+	public void onMyLocationChange(Location arg0) {
+		LatLng userLocation = new LatLng(arg0.getLatitude(), arg0.getLongitude());
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 13));
+//		map.addMarker(new MarkerOptions()
+//		.title("Your current location")
+//		.position(userLocation));
+	}
 
 }

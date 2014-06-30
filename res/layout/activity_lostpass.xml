@@ -25,27 +25,7 @@
 				android:hint="@string/hint_email" >
 			</EditText>
 			
-			<EditText 
-				android:id="@+id/pass"
-				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:background="#EAEAEA"
-				android:padding="5dp"
-				android:inputType="textPassword"
-				android:hint="@string/hint_pass" >
-			</EditText>
-			
-			<Button
-				android:id="@+id/buttonSignin"
-				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:textColor="#FFFFFF"
-				android:background="#3d3b37"
-				android:padding="5dp"
-				android:text="@string/button_sign_in"
-				android:textSize="20sp"
-				android:onClick="signIn"
-				 />
+
 			
 			<Button
 				android:id="@+id/buttonLostPass"
@@ -54,23 +34,9 @@
 				android:textColor="#FFFFFF"
 				android:background="#3d3b37"
 				android:padding="5dp"
-				android:text="@string/title_lost_pass"
-				android:textSize="20sp"
-				android:onClick="goToLostPass"
+				android:text="@string/button_lost_pass"
+				android:textSize="20dp"
 				 />
-			
-			<Button
-				android:id="@+id/buttonSignup"
-				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:textColor="#FFFFFF"
-				android:background="#3d3b37"
-				android:padding="5dp"
-				android:text="@string/title_sign_up"
-				android:textSize="20sp"
-				android:onClick="goToSignup"
-				 />
-			
 		 
 		</LinearLayout>
 	</ScrollView>
