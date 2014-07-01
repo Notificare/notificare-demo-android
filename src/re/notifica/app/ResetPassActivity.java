@@ -53,7 +53,7 @@ public class ResetPassActivity extends Activity {
 		});
 	}
 	
-public void resetPassword() {
+	public void resetPassword() {
 		
 		passwordField = (EditText) findViewById(R.id.pass);
 		confirmPasswordField = (EditText) findViewById(R.id.confirmPass);

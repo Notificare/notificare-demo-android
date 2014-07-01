@@ -1,6 +1,8 @@
 package re.notifica.app;
 
 
+import java.util.ArrayList;
+
 import re.notifica.Notificare;
 import re.notifica.NotificareCallback;
 import re.notifica.NotificareError;
@@ -88,6 +90,7 @@ public class SignInActivity extends Activity {
 								public void onError(NotificareError error) {
 
 								}
+
 							});
 						}
 			        	

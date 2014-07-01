@@ -14,6 +14,7 @@ public class AppBaseApplication extends Application {
 	    Notificare.shared().launch(this);
 	    // Set our own intent receiver
 	    Notificare.shared().setIntentReceiver(AppReceiver.class);
+	    Notificare.shared().setUserPreferencesResource(R.xml.preferences);
 	    // Enable this device for push notifications
 	    Notificare.shared().enableNotifications();
 	    Notificare.shared().enableLocationUpdates();

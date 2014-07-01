@@ -218,8 +218,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 		        setTitle(navigationLabels[position]);
 		        
 			} else if (second.equals("Settings")) {
-				
-				Notificare.shared().setUserPreferencesResource(R.xml.preferences);
+
 				startActivity(new Intent(MainActivity.this, UserPreferencesActivity.class));
 				
 			} else {

@@ -21,6 +21,7 @@ public class AppReceiver extends DefaultIntentReceiver {
 	public void onNotificationReceived(String alert, String notificationId,
 			Bundle extras) {
 		// Execute default behavior, i.e., put notification in drawer
+		Log.d(TAG, "Notification received with extra " + extras.getString("mykey"));
 		super.onNotificationReceived(alert, notificationId, extras);
 	}
 
@@ -30,6 +31,7 @@ public class AppReceiver extends DefaultIntentReceiver {
 		// Notification is in extras
 		NotificareNotification notification = extras.getParcelable(Notificare.INTENT_EXTRA_NOTIFICATION);
 		Log.d(TAG, "Notification was opened with type " + notification.getType());
+		Log.d(TAG, "Notification was opened with extra " + notification.getExtra().get("mykey"));
 		// By default, open the NotificationActivity and let it handle the Notification
 		super.onNotificationOpened(alert, notificationId, extras);
 	}
