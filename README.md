@@ -11,3 +11,4 @@ Demo for GCM, Tags, Location Services and OAuth2 features of Notificare
 5. Run or Generate a signed APK
 6. Start sending rich push messages, using geo-targeting and geo-fences.
 7. Authentication will only work if you subscribe for the OAuth2 Service in https://dashboard.notifica.re under **Settings > Services**
+8. To enable beacon support, download the AltBeacon library from http://altbeacon.github.io/android-beacon-library/download.html and put the .aar file in a 'libs' folder in your project. If you are not gonna use beacons, comment out the references in your app to beacon-specific classes and comment out the dependency in  build.gradle
