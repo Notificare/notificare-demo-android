@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 20
@@ -22,11 +22,15 @@ android {
 repositories {
     mavenCentral()
     maven {
-        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
+        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
+    }
+    flatDir {
+        dirs 'libs'
     }
 }
 
 dependencies {
-    compile 're.notifica:notificare-push-lib-android:1.1.1'
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.2.0-SNAPSHOT', ext:'aar', transitive: true
+    compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.0', ext: 'aar', transitive: true
 }
 

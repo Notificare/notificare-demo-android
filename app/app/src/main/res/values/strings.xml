@@ -53,5 +53,6 @@
     <string name="success_account_created">Account created successfully. You can now sign in.</string>
     <string name="success_email_found">Account found. Please check your mailbox for more information.</string>
 	<string name="success_reset_pass">Password changed successfully. You can now sign in.</string>
-   
+    <string name="content_description_beacon_icon">beacon</string>
+
 </resources>

@@ -35,7 +35,14 @@ public class AppReceiver extends DefaultIntentReceiver {
 		super.onNotificationOpened(alert, notificationId, extras);
 	}
 
-	@Override
+    @Override
+    public void onReady() {
+        Notificare.shared().enableNotifications();
+        Notificare.shared().enableLocationUpdates();
+        Notificare.shared().enableBeacons();
+    }
+
+    @Override
 	public void onRegistrationFinished(String deviceId) {
 		Log.d(TAG, "Device was registered with GCM as device " + deviceId);
 		// Register as a device for a test userID
