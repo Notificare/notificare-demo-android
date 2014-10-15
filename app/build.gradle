@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'android'
 
 android {
     compileSdkVersion 20
@@ -34,3 +34,6 @@ dependencies {
     compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.0', ext: 'aar', transitive: true
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}

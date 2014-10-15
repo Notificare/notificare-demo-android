@@ -3,12 +3,14 @@
     <string name="app_name">My App</string>
     <string-array name="navigation_labels">
         <item>Home</item>
+        <item>About</item>
         <item>Locations</item>
         <item>User Profile</item>
         <item>Settings</item>
     </string-array>
 	<string-array name="navigation_urls">
         <item>http://www.notifica.re/apps-content/notificare</item>
+        <item>http://www.notifica.re/apps-content/notificare/about</item>
         <item>func:Map</item>
         <item>func:Login</item>
         <item>func:Settings</item>
