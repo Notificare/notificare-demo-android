@@ -52,10 +52,6 @@
         </activity>
 
         <activity
-            android:name="re.notifica.app.SignInActivity"
-            android:label="@string/title_sign_in" >
-        </activity>
-        <activity
             android:name="re.notifica.app.SignUpActivity"
             android:label="@string/title_sign_up" >
         </activity>

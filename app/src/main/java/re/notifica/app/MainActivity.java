@@ -2,16 +2,19 @@ package re.notifica.app;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import re.notifica.Notificare;
 import re.notifica.NotificareCallback;
 import re.notifica.NotificareError;
 import re.notifica.model.NotificareUser;
+import re.notifica.model.NotificareUserPreference;
 import re.notifica.ui.UserPreferencesActivity;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
@@ -19,6 +22,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,8 +34,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,7 +51,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyLocationChangeListener {
 
-	public GoogleMap map;
+    public GoogleMap map;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -53,6 +59,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] navigationLabels;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +136,12 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+
+        if(Notificare.shared().isLoggedIn()) {
+            inflater.inflate(R.menu.user, menu);
+        }else{
+            inflater.inflate(R.menu.main, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -138,7 +150,12 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_ibeacons).setVisible(!drawerOpen);
+        if(Notificare.shared().isLoggedIn()) {
+            menu.findItem(R.id.action_signout).setVisible(!drawerOpen);
+        }else {
+            menu.findItem(R.id.action_ibeacons).setVisible(!drawerOpen);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -151,9 +168,36 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
         }
         // Handle action buttons
         switch(item.getItemId()) {
+        case R.id.action_signout:
+
+            item.setVisible(false);
+
+        	Notificare.shared().userLogout(new NotificareCallback<Boolean>() {
+
+                @Override
+                public void onSuccess(Boolean result) {
+
+                    Fragment fragment = new WebViewFragment();
+                    Bundle args = new Bundle();
+                    args.putInt(WebViewFragment.ARG_NAVIGATION_NUMBER, 0);
+                    fragment.setArguments(args);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                    mDrawerList.setItemChecked(0, true);
+                    setTitle(navigationLabels[0]);
+
+                }
+
+                @Override
+                public void onError(NotificareError error) {
+
+                }
+            });
+
+            return true;
         case R.id.action_ibeacons:
-        	Intent a = new Intent(MainActivity.this, BeaconsActivity.class);
-			startActivity(a);
+            Intent a = new Intent(MainActivity.this, BeaconsActivity.class);
+            startActivity(a);
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -174,6 +218,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
     	StringTokenizer tokens = new StringTokenizer(values[position], ":");
     	String first = tokens.nextToken();
     	String second = tokens.nextToken();
+
 
 		if (first.equals("http") || second.equals("https")) {
 
@@ -216,35 +261,41 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 		        mDrawerList.setItemChecked(position, true);
 		        setTitle(navigationLabels[position]);
 		        
-			} else if (second.equals("Settings")) {
+			} else if (second.equals("Beacons")) {
+
+                startActivity(new Intent(MainActivity.this, BeaconsActivity.class));
+
+            } else if (second.equals("Settings")) {
 
 				startActivity(new Intent(MainActivity.this, UserPreferencesActivity.class));
 				
 			} else {
-				
-				if(Notificare.shared().isLoggedIn()){
-					Fragment fragment = new UserProfileFragment();
-					Bundle args = new Bundle();
-					args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, position);
-					fragment.setArguments(args);
-					FragmentManager fragmentManager = getFragmentManager();
-					fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-					
-//					Fragment fragment2 = new AccessTokenFragment();
-//					Bundle args2 = new Bundle();
-//					args.putInt(AccessTokenFragment.ARG_NAVIGATION_NUMBER, position);
-//					fragment.setArguments(args2);
-//					FragmentManager fragmentManager2 = getFragmentManager();
-//					fragmentManager2.beginTransaction().replace(R.id.content_frame, fragment2).commit();
-//					
-//					fragmentManager.beginTransaction().add(R.id.content_frame, fragment2).commit();
-					// update selected item and title, then close the drawer
-			        mDrawerList.setItemChecked(position, true);
-			        setTitle(navigationLabels[position]);
+
+				if(!Notificare.shared().isLoggedIn()){
+
+                    Fragment fragment = new SignInFragment();
+                    Bundle args = new Bundle();
+                    args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
+                    fragment.setArguments(args);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                    // update selected item and title, then close the drawer
+                    mDrawerList.setItemChecked(position, true);
+                    setTitle(navigationLabels[position]);
+
 				} else {
-					Intent a = new Intent(MainActivity.this, SignInActivity.class);
-					startActivity(a);
-				}
+                    Fragment fragment = new UserProfileFragment();
+                    Bundle args = new Bundle();
+                    args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, position);
+                    fragment.setArguments(args);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                    // update selected item and title, then close the drawer
+                    mDrawerList.setItemChecked(position, true);
+                    setTitle(navigationLabels[position]);
+                }
 			}
 		}
 
@@ -311,6 +362,106 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
             return rootView;
         }
     }
+
+    /**
+     * Fragment with a WebView
+     */
+    public static class SignInFragment extends Fragment {
+        public static final String ARG_NAVIGATION_NUMBER = "navigation_pos";
+
+        public SignInFragment() {
+            // Empty constructor required for fragment subclasses
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            final View rootView = inflater.inflate(R.layout.fragment_signin, container, false);
+            final int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
+            String label = getResources().getStringArray(R.array.navigation_labels)[i];
+            String url = getResources().getStringArray(R.array.navigation_urls)[i];
+
+            rootView.findViewById(R.id.buttonSignin).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //signIn();
+
+                    EditText emailField = (EditText) rootView.findViewById(R.id.email);
+                    EditText passwordField = (EditText) rootView.findViewById(R.id.pass);
+
+                    String email = emailField.getText().toString();
+                    String password = passwordField.getText().toString();
+
+                    TextView info = (TextView) rootView.findViewById(R.id.infoText);
+
+
+                    if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
+                        info.setText(R.string.error_sign_in);
+                    } else if (password.length() < 6) {
+                        info.setText(R.string.error_pass_too_short);
+                    } else if (!email.contains("@")) {
+                        info.setText(R.string.error_invalid_email);
+                    } else {
+
+                        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_signin), true);
+
+
+                        Notificare.shared().userLogin(email, password, new NotificareCallback<Boolean>() {
+
+                            @Override
+                            public void onError(NotificareError arg0) {
+                                dialog.dismiss();
+
+                            }
+
+                            @Override
+                            public void onSuccess(Boolean result) {
+
+                                Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
+
+                                    @Override
+                                    public void onError(NotificareError arg0) {
+                                        dialog.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onSuccess(NotificareUser arg0) {
+                                        Notificare.shared().setUserId(arg0.getUserId());
+                                        Notificare.shared().registerDevice(Notificare.shared().getDeviceId(), arg0.getUserId(), arg0.getUserName(), new NotificareCallback<String>() {
+
+                                            @Override
+                                            public void onSuccess(String result) {
+
+                                                Fragment fragment = new UserProfileFragment();
+                                                Bundle args = new Bundle();
+                                                args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, i);
+                                                fragment.setArguments(args);
+                                                FragmentManager fragmentManager = getFragmentManager();
+                                                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                                                dialog.dismiss();
+                                            }
+
+                                            @Override
+                                            public void onError(NotificareError error) {
+                                                dialog.dismiss();
+                                            }
+
+                                        });
+                                    }
+
+                                });
+
+                            }
+
+                        });
+                    }
+                }
+            });
+            getActivity().setTitle(label);
+            return rootView;
+        }
+    }
     
     
     /**
@@ -331,43 +482,85 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
             String label = getResources().getStringArray(R.array.navigation_labels)[i];
             //String url = getResources().getStringArray(R.array.navigation_urls)[i];
             final ListView userProfileList =  (ListView) rootView.findViewById(R.id.userProfileList);
-            
-            Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
-				
-				@Override
-				public void onSuccess(NotificareUser result) {
-					
-		            final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-		           
-		            HashMap<String, String> email = new HashMap<String, String>();
-		            email.put("label", "email");
-		            email.put("value", result.getUserId());
-		    		list.add(email);
-		    		
-		    		HashMap<String, String> name = new HashMap<String, String>();
-		    		name.put("label", "name");
-		    		name.put("value", result.getUserName());
-		    		list.add(name);
-		    		
-		    		HashMap<String, String> access_token = new HashMap<String, String>();
-		    		access_token.put("label", "email token");
-		    		access_token.put("value", result.getAccessToken());
-		    		list.add(access_token);
-		    		
-		            ListAdapter adapter = new UserProfileAdapter(getActivity(), list);
-		            userProfileList.setAdapter(adapter);
-				}
-				
-				@Override
-				public void onError(NotificareError error) {
-					if (error.getCode() == NotificareError.FORBIDDEN || error.getCode() == NotificareError.UNAUTHORIZED) {
-						Intent intent = new Intent(Notificare.shared().getApplicationContext(), SignInActivity.class);
-						startActivity(intent);
-					} else {
-						Toast.makeText(Notificare.shared().getApplicationContext(), "Error fetching user details", Toast.LENGTH_LONG).show();
-					}
-				}
-			});
+
+            if(Notificare.shared().isLoggedIn()){
+                Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
+
+                    @Override
+                    public void onSuccess(NotificareUser userResult) {
+
+                        final NotificareUser result = userResult;
+                        Notificare.shared().fetchUserPreferences(new NotificareCallback<List<NotificareUserPreference>>() {
+                            @Override
+                            public void onSuccess(List<NotificareUserPreference> notificareUserPreferences) {
+
+                                final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
+                                final ArrayList<Integer> headers = new ArrayList<Integer>();
+                                final ArrayList<Integer> cells = new ArrayList<Integer>();
+
+                                HashMap<String, String> header1 = new HashMap<String, String>();
+                                header1.put("label", getString(R.string.header_user_profile));
+                                list.add(header1);
+
+                                HashMap<String, String> userProfile = new HashMap<String, String>();
+                                userProfile.put("name", result.getUserName());
+                                userProfile.put("email", result.getUserId());
+                                userProfile.put("token", result.getAccessToken());
+                                userProfile.put("icon", result.getUserId());
+                                userProfile.put("label", "user_profile");
+                                userProfile.put("action", result.getUserId());
+                                list.add(userProfile);
+
+                                HashMap<String, String> changePass = new HashMap<String, String>();
+                                changePass.put("label", getString(R.string.title_change_pass));
+                                list.add(changePass);
+
+                                HashMap<String, String> generateToken = new HashMap<String, String>();
+                                generateToken.put("label", getString(R.string.title_generate_token));
+                                list.add(generateToken);
+
+                                HashMap<String, String> header2 = new HashMap<String, String>();
+                                header2.put("label", getString(R.string.header_user_preferences));
+                                list.add(header2);
+
+                                for (int i=0; i<notificareUserPreferences.size(); i++) {
+                                    HashMap<String, String> pref = new HashMap<String, String>();
+                                    pref.put("label", notificareUserPreferences.get(i).getLabel());
+                                    list.add(pref);
+                                }
+
+                                headers.add(0);
+                                headers.add(4);
+                                cells.add(1);
+
+                                ListAdapter adapter = new UserProfileAdapter(getActivity(), list, headers, cells);
+
+                                userProfileList.setAdapter(adapter);
+
+                            }
+
+                            @Override
+                            public void onError(NotificareError notificareError) {
+
+                            }
+                        });
+
+
+
+
+                    }
+
+                    @Override
+                    public void onError(NotificareError error) {
+                        if (error.getCode() == NotificareError.FORBIDDEN || error.getCode() == NotificareError.UNAUTHORIZED) {
+                            Toast.makeText(Notificare.shared().getApplicationContext(), "Unauthorized access", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(Notificare.shared().getApplicationContext(), "Error fetching user details", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+
             
             getActivity().setTitle(label);
             return rootView;
@@ -388,5 +581,21 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 //		.title("Your current location")
 //		.position(userLocation));
 	}
+
+
+
+    public void goToSignup(View view) {
+
+        Intent a = new Intent(MainActivity.this, SignUpActivity.class);
+        startActivity(a);
+
+    }
+
+    public void goToLostPass(View view) {
+
+        Intent a = new Intent(MainActivity.this, LostPassActivity.class);
+        startActivity(a);
+
+    }
 
 }
