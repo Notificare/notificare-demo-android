@@ -25,6 +25,7 @@
     <string name="loader_signin">Authenticating...</string>
     <string name="loader_connection">Contacting server...</string>
     <string name="loader">Loading...</string>
+    <string name="loader_generate_token">Generating new token...</string>
     
     <string name="title_sign_in">Sign in</string>
     <string name="title_sign_up">Sign up</string>
@@ -59,7 +60,7 @@
     <string name="error_invalid_name">Please insert your name</string>
     <string name="error_invalid_email">Invalid email address</string>
     <string name="error_pass_too_short">Password is too short</string>
-    <string name="error_pass_not_match">Confirm the same password twice</string>
+    <string name="error_pass_not_match">Passwords don\'t match. Please confirm the same password twice.</string>
     <string name="error_email_not_found">No account found for that email</string>
     <string name="error_generate_token">Could not generate token</string>
     <string name="error_change_password">Could not change password</string>

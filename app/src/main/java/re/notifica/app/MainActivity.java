@@ -1,6 +1,7 @@
 package re.notifica.app;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -418,7 +419,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                         Notificare.shared().userLogin(email, password, new NotificareCallback<Boolean>() {
 
                             @Override
-                            public void onError(NotificareError arg0) {
+                            public void onError(NotificareError error) {
                                 dialog.dismiss();
 
                             }
@@ -429,14 +430,14 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                                 Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
 
                                     @Override
-                                    public void onError(NotificareError arg0) {
+                                    public void onError(NotificareError error) {
                                         dialog.dismiss();
                                     }
 
                                     @Override
-                                    public void onSuccess(NotificareUser arg0) {
-                                        Notificare.shared().setUserId(arg0.getUserId());
-                                        Notificare.shared().registerDevice(Notificare.shared().getDeviceId(), arg0.getUserId(), arg0.getUserName(), new NotificareCallback<String>() {
+                                    public void onSuccess(NotificareUser user) {
+                                        Notificare.shared().setUserId(user.getUserId());
+                                        Notificare.shared().registerDevice(Notificare.shared().getDeviceId(), user.getUserId(), user.getUserName(), new NotificareCallback<String>() {
 
                                             @Override
                                             public void onSuccess(String result) {
@@ -536,14 +537,22 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                                     prefs.add(preferenceObj);
                                     HashMap<String, String> pref = new HashMap<String, String>();
                                     pref.put("label", preferenceObj.getLabel());
+                                    pref.put("preferenceId", preferenceObj.getId());
 
                                     if(preferenceObj.getPreferenceType().equals("choice")){
                                         for (NotificareUserPreferenceOption segmentObj : preferenceObj.getPreferenceOptions()) {
-
                                             if(segmentObj.isSelected()){
                                                 pref.put("name", segmentObj.getLabel());
                                             }
+                                        }
+                                    }
 
+                                    if(preferenceObj.getPreferenceType().equals("single")){
+                                        for (NotificareUserPreferenceOption segmentObj : preferenceObj.getPreferenceOptions()) {
+                                            pref.put("segmentId", segmentObj.getUserSegmentId());
+                                            if(segmentObj.isSelected()){
+                                                pref.put("selected", "1");
+                                            }
                                         }
                                     }
                                     list.add(pref);
@@ -566,6 +575,21 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                                         if(list.get(position).get("label").equals(getString(R.string.title_generate_token))){
                                             onGenerateToken();
                                         }
+
+                                        if(list.get(position).get("preferenceId") != null){
+
+                                            NotificareUserPreference preference = prefs.get(position - 5);
+
+                                            if(preference.getPreferenceType().equals("choice")){
+                                                showSingleChoiceOptions(prefs.get(position - 5));
+                                            } else {
+                                                showMultiChoiceOptions(prefs.get(position - 5));
+                                            }
+
+
+                                        }
+
+
                                     }
                                 });
                                 dialog.dismiss();
@@ -618,12 +642,11 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
 
-
-                        if (!pass1.getText().equals(pass2.getText())) {
+                        if (!pass1.getText().toString().equals(pass2.getText().toString())) {
                             onChangePasswordError(getString(R.string.error_pass_not_match));
-                        } else if (pass1.getText() == null && pass2.getText() == null) {
+                        } else if (pass1.getText().toString() == null && pass2.getText().toString() == null) {
                             onChangePasswordError(getString(R.string.error_reset_pass));
-                        } else if (pass1.getText().length() < 5) {
+                        } else if (pass1.getText().toString().length() < 5) {
                             onChangePasswordError(getString(R.string.error_pass_too_short));
                         } else {
                             doChangePassword(pass1);
@@ -691,7 +714,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 
         public void onGenerateToken(){
 
-            final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_signin), true);
+            final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_generate_token), true);
             final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
 
 
@@ -721,7 +744,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                 public void onError(NotificareError notificareError) {
                     dialog.dismiss();
                     alert.setTitle(getString(R.string.app_name));
-                    alert.setMessage(getString(R.string.success_generate_token));
+                    alert.setMessage(getString(R.string.error_generate_token));
                     alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -730,6 +753,133 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                     alert.show();
                 }
             });
+        }
+
+        public void showSingleChoiceOptions(final NotificareUserPreference preference){
+            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
+            alert.setTitle(getString(R.string.app_name));
+
+            ArrayList<String> tmpList =  new ArrayList<String>();
+            int selectedPosition = 0;
+            for(int i = 0; i < preference.getPreferenceOptions().size(); i++){
+                if(preference.getPreferenceOptions().get(i).isSelected()){
+                    selectedPosition = i;
+                }
+                tmpList.add(preference.getPreferenceOptions().get(i).getLabel());
+            }
+
+            CharSequence[] charSeqOfNames = tmpList.toArray(new CharSequence[tmpList.size()]);
+            boolean bl[] = new boolean[tmpList.size()];
+
+            alert.setSingleChoiceItems(charSeqOfNames, selectedPosition, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+
+                    Notificare.shared().userSegmentAddToUserPreference(preference.getPreferenceOptions().get(which).getUserSegmentId(), preference, new NotificareCallback<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+
+
+                        }
+
+                        @Override
+                        public void onError(NotificareError notificareError) {
+
+                        }
+                    });
+
+                }
+            });
+
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+
+                    refreshFragment();
+
+                }
+            });
+            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
+
+            alert.show();
+        }
+
+        public void showMultiChoiceOptions(final NotificareUserPreference preference){
+            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
+            alert.setTitle(getString(R.string.app_name));
+
+            ArrayList<String> tmpList =  new ArrayList<String>();
+            boolean bl[] = new boolean[preference.getPreferenceOptions().size()];
+            int index = 0;
+            for(NotificareUserPreferenceOption option : preference.getPreferenceOptions()){
+                bl[index++] = option.isSelected();
+                tmpList.add(option.getLabel());
+            }
+
+            CharSequence[] charSeqOfNames = tmpList.toArray(new CharSequence[tmpList.size()]);
+
+            alert.setMultiChoiceItems(charSeqOfNames, bl, new DialogInterface.OnMultiChoiceClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                    if(isChecked){
+
+                        Notificare.shared().userSegmentAddToUserPreference(preference.getPreferenceOptions().get(which).getUserSegmentId(), preference, new NotificareCallback<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean aBoolean) {
+
+
+                            }
+
+                            @Override
+                            public void onError(NotificareError notificareError) {
+
+                            }
+                        });
+
+                    } else {
+
+                        Notificare.shared().userSegmentRemoveFromUserPreference(preference.getPreferenceOptions().get(which).getUserSegmentId(), preference, new NotificareCallback<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean aBoolean) {
+
+
+                            }
+
+                            @Override
+                            public void onError(NotificareError notificareError) {
+
+                            }
+                        });
+
+                    }
+                }
+            });
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    refreshFragment();
+                }
+            });
+            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
+            alert.show();
+        }
+
+        public void refreshFragment(){
+            int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
+            Fragment fragment = new UserProfileFragment();
+            Bundle args = new Bundle();
+            args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, i);
+            fragment.setArguments(args);
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         }
     }
 
@@ -764,6 +914,13 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 
     }
 
-
+    public void refreshFragment(){
+        Fragment fragment = new UserProfileFragment();
+        Bundle args = new Bundle();
+        args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, 4);
+        fragment.setArguments(args);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    }
 
 }

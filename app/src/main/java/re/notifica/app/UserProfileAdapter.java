@@ -14,11 +14,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.nfc.Tag;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -28,9 +31,16 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import re.notifica.Notificare;
+import re.notifica.NotificareCallback;
+import re.notifica.NotificareError;
 import re.notifica.model.NotificareUserPreference;
+import re.notifica.model.NotificareUserPreferenceOption;
+import re.notifica.model.NotificareUserSegment;
 
 public class UserProfileAdapter extends BaseAdapter {
+
+    protected static final String TAG = UserProfileAdapter.class.getSimpleName();
 
 	private Activity activity;
     private ArrayList<HashMap<String, String>> data;
@@ -46,6 +56,7 @@ public class UserProfileAdapter extends BaseAdapter {
     private static final int TYPE_SINGLE = 3;
     private static final int TYPE_CHOICE = 4;
     private static final int TYPE_SELECT = 5;
+    private static final int SEGMENTS_START = 5;
 
 
     public UserProfileAdapter(Activity activity, ArrayList<HashMap<String, String>> userProfileList, ArrayList<NotificareUserPreference> prefs) {
@@ -58,7 +69,7 @@ public class UserProfileAdapter extends BaseAdapter {
         this.prefs = prefs;
 
         for (int i=0; i < this.prefs.size(); i++) {
-            segmentCells.add(i + 5);
+            segmentCells.add(i + SEGMENTS_START);
         }
 
         headers.add(0);
@@ -80,11 +91,11 @@ public class UserProfileAdapter extends BaseAdapter {
             } else {
                 if(segmentCells.contains(position)){
 
-                    if(this.prefs.get(position - 5).getPreferenceType().equals("single")){
+                    if(this.prefs.get(position - SEGMENTS_START).getPreferenceType().equals("single")){
                         return TYPE_SINGLE;
-                    } else if (this.prefs.get(position - 5).getPreferenceType().equals("choice")){
+                    } else if (this.prefs.get(position - SEGMENTS_START).getPreferenceType().equals("choice")){
                         return TYPE_CHOICE;
-                    } else if (this.prefs.get(position - 5).getPreferenceType().equals("select")){
+                    } else if (this.prefs.get(position - SEGMENTS_START).getPreferenceType().equals("select")){
                         return TYPE_SELECT;
                     } else {
                         return TYPE_SINGLE;
@@ -124,7 +135,7 @@ public class UserProfileAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         HashMap<String, String> itemHash = new HashMap<String, String>();
         itemHash = data.get(position);
@@ -178,8 +189,53 @@ public class UserProfileAdapter extends BaseAdapter {
 
                 case TYPE_SINGLE:
                     convertView = inflater.inflate(R.layout.row_segment_single, null);
+                    holder.segmentSwitch = (Switch) convertView.findViewById(R.id.item_switch);
                     holder.name = (TextView) convertView.findViewById(R.id.item_label);
                     holder.name.setText(itemHash.get("label"));
+
+                    if( itemHash.get("selected") != null && itemHash.get("selected").equals("1")){
+                        holder.segmentSwitch.setChecked(true);
+                    }
+
+                    holder.segmentSwitch.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            NotificareUserPreferenceOption segment = prefs.get(position - SEGMENTS_START).getPreferenceOptions().get(0);
+
+                            if(((Switch) v).isChecked()) {
+
+                                Notificare.shared().userSegmentAddToUserPreference(segment.getUserSegmentId(), prefs.get(position - 5), new NotificareCallback<Boolean>() {
+                                    @Override
+                                    public void onSuccess(Boolean aBoolean) {
+
+                                        ((MainActivity) activity).refreshFragment();
+                                    }
+
+                                    @Override
+                                    public void onError(NotificareError notificareError) {
+
+                                    }
+                                });
+
+                            } else {
+
+                                Notificare.shared().userSegmentRemoveFromUserPreference(segment.getUserSegmentId(), prefs.get(position - 5), new NotificareCallback<Boolean>() {
+                                    @Override
+                                    public void onSuccess(Boolean aBoolean) {
+
+                                        ((MainActivity) activity).refreshFragment();
+                                    }
+
+                                    @Override
+                                    public void onError(NotificareError notificareError) {
+
+                                    }
+                                });
+                            }
+
+                        }
+                    });
                     holder.name.setTypeface(null, Typeface.BOLD);
                     break;
 
@@ -209,6 +265,7 @@ public class UserProfileAdapter extends BaseAdapter {
     }
 
     public static class ViewHolder {
+        public Switch segmentSwitch;
         public ImageView icon;
         public TextView name;
         public TextView email;

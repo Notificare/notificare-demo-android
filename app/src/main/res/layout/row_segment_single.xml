@@ -11,7 +11,7 @@
         android:text="asdfasfd" />
 
     <Switch
-        android:id="@+id/togglebutton"
+        android:id="@+id/item_switch"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
@@ -19,7 +19,6 @@
         android:layout_marginBottom="6dp"
         android:layout_marginRight="6dp"
         android:textOn="On"
-        android:textOff="Off"
-        android:onClick="onToggleClicked"/>
+        android:textOff="Off"/>
 
 </RelativeLayout>
