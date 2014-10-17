@@ -10,11 +10,15 @@ import re.notifica.NotificareCallback;
 import re.notifica.NotificareError;
 import re.notifica.model.NotificareUser;
 import re.notifica.model.NotificareUserPreference;
+import re.notifica.model.NotificareUserPreferenceOption;
+import re.notifica.model.NotificareUserSegment;
 import re.notifica.ui.UserPreferencesActivity;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
@@ -22,7 +26,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +41,7 @@ import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -60,6 +67,8 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
     private CharSequence mTitle;
     private String[] navigationLabels;
     private ProgressDialog dialog;
+
+    protected static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -482,8 +491,9 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
             String label = getResources().getStringArray(R.array.navigation_labels)[i];
             //String url = getResources().getStringArray(R.array.navigation_urls)[i];
             final ListView userProfileList =  (ListView) rootView.findViewById(R.id.userProfileList);
+            final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader), true);
 
-            if(Notificare.shared().isLoggedIn()){
+            if(Notificare.shared().isLoggedIn())
                 Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
 
                     @Override
@@ -495,8 +505,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                             public void onSuccess(List<NotificareUserPreference> notificareUserPreferences) {
 
                                 final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-                                final ArrayList<Integer> headers = new ArrayList<Integer>();
-                                final ArrayList<Integer> cells = new ArrayList<Integer>();
+                                final ArrayList<NotificareUserPreference> prefs = new ArrayList<NotificareUserPreference>();
 
                                 HashMap<String, String> header1 = new HashMap<String, String>();
                                 header1.put("label", getString(R.string.header_user_profile));
@@ -505,13 +514,13 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                                 HashMap<String, String> userProfile = new HashMap<String, String>();
                                 userProfile.put("name", result.getUserName());
                                 userProfile.put("email", result.getUserId());
-                                userProfile.put("token", result.getAccessToken());
+                                userProfile.put("token", result.getAccessToken() + "@pushmail.notifica.re");
                                 userProfile.put("icon", result.getUserId());
                                 userProfile.put("label", "user_profile");
                                 userProfile.put("action", result.getUserId());
                                 list.add(userProfile);
 
-                                HashMap<String, String> changePass = new HashMap<String, String>();
+                                final HashMap<String, String> changePass = new HashMap<String, String>();
                                 changePass.put("label", getString(R.string.title_change_pass));
                                 list.add(changePass);
 
@@ -523,47 +532,204 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
                                 header2.put("label", getString(R.string.header_user_preferences));
                                 list.add(header2);
 
-                                for (int i=0; i<notificareUserPreferences.size(); i++) {
+                                for (NotificareUserPreference preferenceObj : notificareUserPreferences) {
+                                    prefs.add(preferenceObj);
                                     HashMap<String, String> pref = new HashMap<String, String>();
-                                    pref.put("label", notificareUserPreferences.get(i).getLabel());
+                                    pref.put("label", preferenceObj.getLabel());
+
+                                    if(preferenceObj.getPreferenceType().equals("choice")){
+                                        for (NotificareUserPreferenceOption segmentObj : preferenceObj.getPreferenceOptions()) {
+
+                                            if(segmentObj.isSelected()){
+                                                pref.put("name", segmentObj.getLabel());
+                                            }
+
+                                        }
+                                    }
                                     list.add(pref);
                                 }
 
-                                headers.add(0);
-                                headers.add(4);
-                                cells.add(1);
-
-                                ListAdapter adapter = new UserProfileAdapter(getActivity(), list, headers, cells);
+                                ListAdapter adapter = new UserProfileAdapter(getActivity(), list, prefs);
 
                                 userProfileList.setAdapter(adapter);
 
+                                userProfileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                                    @Override
+                                    public void onItemClick(AdapterView<?> aView, View view, int position,
+                                                            long arg) {
+
+                                        if(list.get(position).get("label").equals(getString(R.string.title_change_pass))){
+                                            onChangePassword();
+                                        }
+
+                                        if(list.get(position).get("label").equals(getString(R.string.title_generate_token))){
+                                            onGenerateToken();
+                                        }
+                                    }
+                                });
+                                dialog.dismiss();
                             }
 
                             @Override
                             public void onError(NotificareError notificareError) {
 
+                                dialog.dismiss();
                             }
                         });
-
-
-
 
                     }
 
                     @Override
                     public void onError(NotificareError error) {
                         if (error.getCode() == NotificareError.FORBIDDEN || error.getCode() == NotificareError.UNAUTHORIZED) {
+                            dialog.dismiss();
                             Toast.makeText(Notificare.shared().getApplicationContext(), "Unauthorized access", Toast.LENGTH_LONG).show();
                         } else {
+                            dialog.dismiss();
                             Toast.makeText(Notificare.shared().getApplicationContext(), "Error fetching user details", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-            }
 
             
             getActivity().setTitle(label);
             return rootView;
+        }
+
+        public void onChangePassword(){
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
+
+                LinearLayout layout = new LinearLayout(this.getActivity().getBaseContext());
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                alert.setTitle(getString(R.string.app_name));
+                alert.setMessage(getString(R.string.title_change_pass));
+
+                final EditText pass1 = new EditText(this.getActivity());
+                final EditText pass2 = new EditText(this.getActivity());
+                pass1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                pass2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                layout.addView(pass1);
+                layout.addView(pass2);
+                alert.setView(layout);
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+
+
+                        if (!pass1.getText().equals(pass2.getText())) {
+                            onChangePasswordError(getString(R.string.error_pass_not_match));
+                        } else if (pass1.getText() == null && pass2.getText() == null) {
+                            onChangePasswordError(getString(R.string.error_reset_pass));
+                        } else if (pass1.getText().length() < 5) {
+                            onChangePasswordError(getString(R.string.error_pass_too_short));
+                        } else {
+                            doChangePassword(pass1);
+                        }
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                alert.show();
+
+        }
+
+        public void doChangePassword(EditText pass){
+            final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_signin), true);
+            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
+
+            String password = pass.getText().toString();
+            Notificare.shared().changePassword(password, new NotificareCallback<Boolean>() {
+                @Override
+                public void onSuccess(Boolean aBoolean) {
+                    dialog.dismiss();
+                    alert.setTitle(getString(R.string.app_name));
+                    alert.setMessage(getString(R.string.success_change_password));
+                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }
+                    });
+                    alert.show();
+
+                }
+
+                @Override
+                public void onError(NotificareError notificareError) {
+                    dialog.dismiss();
+                    alert.setTitle(getString(R.string.app_name));
+                    alert.setMessage(getString(R.string.error_change_password));
+                    alert.show();
+
+                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }
+                    });
+                }
+            });
+        }
+
+        public void onChangePasswordError(String error){
+            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
+            alert.setTitle(getString(R.string.app_name));
+            alert.setMessage(error);
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+
+                }
+            });
+            alert.show();
+        }
+
+        public void onGenerateToken(){
+
+            final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_signin), true);
+            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
+
+
+            Notificare.shared().generateAccessToken(new NotificareCallback<NotificareUser>() {
+                @Override
+                public void onSuccess(NotificareUser notificareUser) {
+                    dialog.dismiss();
+                    alert.setTitle(getString(R.string.app_name));
+                    alert.setMessage(getString(R.string.success_generate_token));
+                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                            int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
+                            Fragment fragment = new UserProfileFragment();
+                            Bundle args = new Bundle();
+                            args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, i);
+                            fragment.setArguments(args);
+                            FragmentManager fragmentManager = getFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                        }
+                    });
+                    alert.show();
+                }
+
+                @Override
+                public void onError(NotificareError notificareError) {
+                    dialog.dismiss();
+                    alert.setTitle(getString(R.string.app_name));
+                    alert.setMessage(getString(R.string.success_generate_token));
+                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }
+                    });
+                    alert.show();
+                }
+            });
         }
     }
 
@@ -597,5 +763,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
         startActivity(a);
 
     }
+
+
 
 }

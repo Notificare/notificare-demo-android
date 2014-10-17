@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="60dp"
+    android:padding="2dip" android:background="@drawable/cell_border_bottom">
+
+    <TextView
+        android:id="@+id/item_label"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingTop="9dp"
+        android:paddingLeft="10dp"
+        android:text="asdfasfd" />
+
+    <Switch
+        android:id="@+id/togglebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginRight="6dp"
+        android:textOn="On"
+        android:textOff="Off"
+        android:onClick="onToggleClicked"/>
+
+</RelativeLayout>

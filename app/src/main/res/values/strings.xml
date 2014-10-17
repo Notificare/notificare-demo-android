@@ -55,15 +55,20 @@
     <string name="error_sign_up">Please fill in all fields</string>
     <string name="error_lost_pass">Please fill in a valid email</string>
     <string name="error_reset_pass">Please fill in a new password</string>
+    <string name="error_reset_pass_confirm">Please confirm the new password</string>
     <string name="error_invalid_name">Please insert your name</string>
     <string name="error_invalid_email">Invalid email address</string>
     <string name="error_pass_too_short">Password is too short</string>
     <string name="error_pass_not_match">Confirm the same password twice</string>
     <string name="error_email_not_found">No account found for that email</string>
+    <string name="error_generate_token">Could not generate token</string>
+    <string name="error_change_password">Could not change password</string>
     
     <string name="success_account_created">Account created successfully. You can now sign in.</string>
     <string name="success_email_found">Account found. Please check your mailbox for more information.</string>
 	<string name="success_reset_pass">Password changed successfully. You can now sign in.</string>
+    <string name="success_generate_token">New token generated successfully.</string>
+    <string name="success_change_password">Password changed successfully.</string>
     <string name="content_description_beacon_icon">beacon</string>
 
 </resources>

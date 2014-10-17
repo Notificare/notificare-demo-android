@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="60dp"
+    android:padding="2dip" android:background="@drawable/cell_border_bottom">
+
+    <TextView
+        android:id="@+id/item_label"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingTop="11dp"
+        android:paddingLeft="10dp"
+        android:text="asdfasfd" />
+
+    <ImageView android:layout_width="10dip"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:id="@+id/item_icon"
+        android:src="@drawable/button_forward" />
+
+</RelativeLayout>
