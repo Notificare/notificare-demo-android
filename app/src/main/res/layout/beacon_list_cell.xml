@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="88dp"
     android:padding="10dip"
-    android:background="#FFFFFF">
+    android:background="@drawable/cell_border_bottom">
 
     <ImageView
         android:id="@+id/icon"

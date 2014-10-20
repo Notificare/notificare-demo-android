@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="60dp"
+    android:padding="10dip"
+    android:background="@drawable/cell_border_bottom">
+
+
+
+    <ImageView android:layout_width="17dip"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"
+        android:layout_marginTop="8dp"
+        android:id="@+id/inbox_delete" android:src="@drawable/delete_icon" />
+
+    <TextView
+        android:id="@+id/inbox_date"
+        android:layout_width="fill_parent"
+        android:layout_height="15dip"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/inbox_message"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_below="@id/inbox_date"
+        android:textSize="14sp" />
+
+</RelativeLayout> 

@@ -279,7 +279,11 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 
 				startActivity(new Intent(MainActivity.this, UserPreferencesActivity.class));
 				
-			} else {
+			} else if (second.equals("Inbox")) {
+
+                startActivity(new Intent(MainActivity.this, InboxActivity.class));
+
+            } else {
 
 				if(!Notificare.shared().isLoggedIn()){
 
