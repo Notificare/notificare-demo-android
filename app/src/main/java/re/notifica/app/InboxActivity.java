@@ -80,9 +80,7 @@ public class InboxActivity extends ActionBarBaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 NotificareInboxItem item = inboxListAdapter.getItem(position);
-//				Notificare.shared().getInboxManager().markItem(item);
-//              Notificare.shared().getInboxManager().removeItem(item);
-//              inboxListAdapter.remove(item);
+				Notificare.shared().getInboxManager().markItem(item);
 				Notificare.shared().openNotification(InboxActivity.this, item.getNotification());
             }
         });
@@ -139,9 +137,6 @@ public class InboxActivity extends ActionBarBaseActivity {
             }
             return rowView;
         }
-
-
-
     }
 
 
@@ -169,10 +164,15 @@ public class InboxActivity extends ActionBarBaseActivity {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_trash:
-                    //shareCurrentItem();
-                    Log.d(TAG, "GOT HERE");
+
+                    for(Integer position : itemsToRemove){
+                        NotificareInboxItem msg = inboxListAdapter.getItem(position);
+                        Notificare.shared().getInboxManager().removeItem(msg);
+                        inboxListAdapter.remove(msg);
+                        listView.getChildAt(position).findViewById(R.id.inbox_delete).setVisibility(View.INVISIBLE);
+                    }
+
                     itemsToRemove.removeAll(itemsToRemove);
-                    listView.findViewById(R.id.inbox_delete).setVisibility(View.INVISIBLE);
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 default:
@@ -183,8 +183,10 @@ public class InboxActivity extends ActionBarBaseActivity {
         // Called when the user exits the action mode
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+            for(Integer position : itemsToRemove){
+                listView.getChildAt(position).findViewById(R.id.inbox_delete).setVisibility(View.INVISIBLE);
+            }
             itemsToRemove.removeAll(itemsToRemove);
-            listView.findViewById(R.id.inbox_delete).setVisibility(View.INVISIBLE);
             mActionMode = null;
         }
     };
