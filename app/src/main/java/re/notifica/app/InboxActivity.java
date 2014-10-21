@@ -42,7 +42,8 @@ public class InboxActivity extends ActionBarBaseActivity {
         inboxListAdapter = new InboxListAdapter(this, R.layout.inbox_list_cell);
         listView.setAdapter(inboxListAdapter);
 
-
+        TextView emptyText = (TextView)findViewById(R.id.empty_message);
+        listView.setEmptyView(emptyText);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -50,7 +51,6 @@ public class InboxActivity extends ActionBarBaseActivity {
                 if(view.findViewById(R.id.inbox_delete).getVisibility() == View.VISIBLE){
                     //uncheck
                     view.findViewById(R.id.inbox_delete).setVisibility(View.INVISIBLE);
-
                     itemsToRemove.remove(new Integer(position));
 
                 } else {
@@ -59,13 +59,9 @@ public class InboxActivity extends ActionBarBaseActivity {
                     view.findViewById(R.id.inbox_delete).setVisibility(View.VISIBLE);
                 }
 
-                Log.d(TAG, String.valueOf(itemsToRemove));
-
                 if (mActionMode != null) {
                     return true;
                 }
-
-
 
                 // Start the CAB using the ActionMode.Callback defined above
                 mActionMode = startActionMode(mActionModeCallback);
@@ -169,7 +165,6 @@ public class InboxActivity extends ActionBarBaseActivity {
                         NotificareInboxItem msg = inboxListAdapter.getItem(position);
                         Notificare.shared().getInboxManager().removeItem(msg);
                         inboxListAdapter.remove(msg);
-                        listView.getChildAt(position).findViewById(R.id.inbox_delete).setVisibility(View.INVISIBLE);
                     }
 
                     itemsToRemove.removeAll(itemsToRemove);

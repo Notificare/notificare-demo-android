@@ -41,6 +41,9 @@
     <string name="title_signout">Signout</string>
     <string name="title_inbox">Inbox</string>
     <string name="title_delete">Delete</string>
+    <string name="title_empty_inbox">No messages found</string>
+    <string name="title_empty_beacons">No beacons found. Make sure your Bluetooth is enabled.</string>
+
 
 
     <string name="header_user_profile">User Info</string>

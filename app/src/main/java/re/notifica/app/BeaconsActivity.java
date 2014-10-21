@@ -30,6 +30,8 @@ public class BeaconsActivity extends BaseActivity implements BeaconRangingListen
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_beacons);
         listView = (ListView)findViewById(R.id.beaconsList);
+        TextView emptyText = (TextView)findViewById(R.id.empty_message);
+        listView.setEmptyView(emptyText);
         beaconListAdapter = new BeaconListAdapter(this, R.layout.beacon_list_cell);
         listView.setAdapter(beaconListAdapter);
         if (Notificare.shared().getBeaconClient() != null) {
