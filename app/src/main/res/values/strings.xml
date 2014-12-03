@@ -4,6 +4,7 @@
     <string-array name="navigation_labels">
         <item>Home</item>
         <item>About</item>
+        <item>Products</item>
         <item>Locations</item>
         <item>Beacons</item>
         <item>My Profile</item>
@@ -13,6 +14,7 @@
 	<string-array name="navigation_urls">
         <item>http://www.notifica.re/apps-content/notificare</item>
         <item>http://www.notifica.re/apps-content/notificare/about</item>
+        <item>func:Products</item>
         <item>func:Map</item>
         <item>func:Beacons</item>
         <item>func:Login</item>
@@ -40,7 +42,9 @@
     <string name="title_ibeacons">iBeacons</string>
     <string name="title_signout">Signout</string>
     <string name="title_inbox">Inbox</string>
+    <string name="title_products">Products</string>
     <string name="title_delete">Delete</string>
+    <string name="title_empty_products">No products found</string>
     <string name="title_empty_inbox">No messages found</string>
     <string name="title_empty_beacons">No beacons found. Make sure your Bluetooth is enabled.</string>
 

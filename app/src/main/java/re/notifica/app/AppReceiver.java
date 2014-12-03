@@ -40,6 +40,7 @@ public class AppReceiver extends DefaultIntentReceiver {
         Notificare.shared().enableNotifications();
         Notificare.shared().enableLocationUpdates();
         Notificare.shared().enableBeacons();
+        Notificare.shared().enableBilling();
     }
 
     @Override

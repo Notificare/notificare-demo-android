@@ -1,7 +1,6 @@
 package re.notifica.app;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -12,7 +11,6 @@ import re.notifica.NotificareError;
 import re.notifica.model.NotificareUser;
 import re.notifica.model.NotificareUserPreference;
 import re.notifica.model.NotificareUserPreferenceOption;
-import re.notifica.model.NotificareUserSegment;
 import re.notifica.ui.UserPreferencesActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,12 +22,11 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -96,7 +93,6 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
                 ) {
@@ -282,6 +278,10 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 			} else if (second.equals("Inbox")) {
 
                 startActivity(new Intent(MainActivity.this, InboxActivity.class));
+
+            } else if (second.equals("Products")) {
+
+                startActivity(new Intent(MainActivity.this, ProductsActivity.class));
 
             } else {
 

@@ -2,7 +2,7 @@ package re.notifica.app;
 
 import re.notifica.Notificare;
 import re.notifica.model.NotificareInboxItem;
-import re.notifica.support.v7.app.ActionBarBaseActivity;
+import re.notifica.push.gcm.BaseActivity;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,7 +25,7 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class InboxActivity extends ActionBarBaseActivity {
+public class InboxActivity extends BaseActivity {
 
     private ListView listView;
     private ArrayList<Integer> itemsToRemove;
