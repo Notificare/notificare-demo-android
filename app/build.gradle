@@ -1,19 +1,19 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.1"
 
     defaultConfig {
         applicationId "re.notifica.app"
         minSdkVersion 16
-        targetSdkVersion 20
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 21
+        versionCode 10001
+        versionName "1.0.1"
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -23,6 +23,7 @@ repositories {
     mavenCentral()
     maven {
         url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
+//        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
     }
     flatDir {
         dirs 'libs'
@@ -35,8 +36,6 @@ dependencies {
     compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.0', ext: 'aar', transitive: true
 }
 
-
-//
 //configurations.all {
 //    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 //}

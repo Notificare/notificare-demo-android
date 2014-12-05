@@ -9,7 +9,7 @@
         <item name="android:background">@color/title_background</item>
     </style>
 
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light"> 
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/WindowTitleBackground</item>
         <item name="windowActionBar">true</item>
 	</style>

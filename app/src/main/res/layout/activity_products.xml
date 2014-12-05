@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="fitXY"
+    tools:context=".ProductsActivity" >
+
+    <ListView
+        android:id="@+id/productList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:scaleType="fitXY"
+        android:dividerHeight="0dp"
+        android:drawSelectorOnTop="false">
+    </ListView>
+
+    <TextView
+        android:id="@+id/empty_message"
+        android:layout_width="wrap_content"
+        android:layout_height="30dip"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/title_empty_products"
+        android:textSize="12sp" />
+
+</RelativeLayout>
