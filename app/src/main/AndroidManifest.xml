@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="re.notifica.app"
-    android:versionCode="10001"
-    android:versionName="1.0.1" >
+    android:versionCode="1"
+    android:versionName="1.0" >
 
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -37,7 +37,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="re.notifica.app.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -46,7 +48,9 @@
         </activity>
         <activity
             android:name="re.notifica.ui.NotificationActivity"
-            android:parentActivityName="re.notifica.app.MainActivity">
+            android:parentActivityName="re.notifica.app.MainActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
@@ -54,47 +58,63 @@
 
         <activity
             android:name="re.notifica.app.SignUpActivity"
-            android:label="@string/title_sign_up" >
+            android:label="@string/title_sign_up"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="re.notifica.app.LostPassActivity"
-            android:label="@string/title_lost_pass" >
+            android:label="@string/title_lost_pass"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="re.notifica.app.ResetPassActivity"
-            android:label="@string/title_reset_pass" >
+            android:label="@string/title_reset_pass"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/resetpassword/5354f0bb3fa544452ff4c7c0" />
+                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/resetpassword/54860e77eba74e971d3cfcd0" />
             </intent-filter>
         </activity>
         <activity
             android:name="re.notifica.app.ValidateActivity"
-            android:label="@string/title_validate" >
+            android:label="@string/title_validate"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/validate/5354f0bb3fa544452ff4c7c0" /> //Replace with your own app ID
+                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/validate/54860e77eba74e971d3cfcd0" /> //Replace with your own app ID
             </intent-filter>
         </activity>
         <activity
             android:name="re.notifica.app.BeaconsActivity"
-            android:label="@string/title_ibeacons" >
+            android:label="@string/title_ibeacons"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="re.notifica.app.InboxActivity"
-            android:label="@string/title_inbox" >
+            android:label="@string/title_inbox"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="re.notifica.app.ProductsActivity"
-            android:label="@string/title_products" >
+            android:label="@string/title_products"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="re.notifica.ui.UserPreferencesActivity"
-            android:label="@string/title_settings" >
+            android:label="@string/title_settings"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="re.notifica.intent.action.OpenUserPreferences" />
                 <category android:name="re.notifica.app" />
@@ -144,7 +164,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyA-08WpiHN8tn834dXS9hCSHhILcEP7u3c" />
+            android:value="AIzaSyASd9psfiY0OWOjrjmalerIT6tQ9F_pyaQ" />
 
     </application>
 

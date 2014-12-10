@@ -1,0 +1,99 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/wildsand">
+
+    <ScrollView android:id="@+id/ScrlView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+        <LinearLayout
+            android:id="@+id/layoutForScroll"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/wildsand" >
+
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/tutorial_done_icon"
+                android:id="@+id/imageView"
+                android:layout_marginTop="40dp"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView android:id="@+id/titleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tutorial_title_page_three"
+                android:gravity="center_horizontal"
+                android:textStyle="bold"
+                android:textSize="24dp" />
+
+            <TextView android:id="@+id/infoText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/tutorial_text_page_three"
+                android:gravity="center_horizontal"
+                android:textSize="19dp" />
+
+            <Button
+                android:id="@+id/buttonDashboard"
+                android:layout_width="fill_parent"
+                android:layout_height="60dp"
+                android:textColor="#FFFFFF"
+                android:background="@color/mantis"
+                android:text="@string/tutorial_button_page_three"
+                android:textSize="20sp"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp" />
+
+            <ImageButton
+                android:id="@+id/mailButton"
+                android:background="#00000000"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:gravity="center_horizontal"
+                android:scaleType="fitCenter"
+                android:src="@drawable/mail"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="35dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="-100dp" />
+
+
+
+            <ImageButton
+                android:id="@+id/facebookButton"
+                android:background="#00000000"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:gravity="center_horizontal"
+                android:scaleType="fitCenter"
+                android:src="@drawable/facebook"
+                android:layout_marginLeft="150dp"
+                android:layout_marginTop="-60dp"
+                android:contentDescription="facebookButton" />
+
+            <ImageButton
+                android:id="@+id/twitterButton"
+                android:background="#00000000"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/twitter"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="fitCenter"
+                android:layout_marginRight="-100dp"
+                android:layout_marginTop="-60dp" />
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+</RelativeLayout>

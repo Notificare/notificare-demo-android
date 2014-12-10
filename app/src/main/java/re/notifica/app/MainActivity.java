@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 import re.notifica.Notificare;
 import re.notifica.NotificareCallback;
 import re.notifica.NotificareError;
+import re.notifica.model.NotificareRegion;
 import re.notifica.model.NotificareUser;
 import re.notifica.model.NotificareUserPreference;
 import re.notifica.model.NotificareUserPreferenceOption;
@@ -20,13 +21,16 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,22 +43,27 @@ import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyLocationChangeListener {
+public class MainActivity extends Activity  {
 
     public GoogleMap map;
     private DrawerLayout mDrawerLayout;
@@ -65,6 +74,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
     private CharSequence mTitle;
     private String[] navigationLabels;
     private ProgressDialog dialog;
+    public Typeface myTypeface;
 
     protected static final String TAG = MainActivity.class.getSimpleName();
 
@@ -72,6 +82,8 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lato-Hairline.ttf");
 
         mTitle = mDrawerTitle = getTitle();
         navigationLabels = getResources().getStringArray(R.array.navigation_labels);
@@ -241,7 +253,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
             
 		}else {
 			if(second.equals("Map")){
-				
+
 				GoogleMapOptions options = new GoogleMapOptions();
 				options.mapType(GoogleMap.MAP_TYPE_NORMAL)
 				.compassEnabled(true)
@@ -256,17 +268,41 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
 				fragmentTransaction.add(R.id.content_frame, mMapFragment);
 				fragmentTransaction.commit();
 				getFragmentManager().executePendingTransactions();
-				
-//				//@TODO: Add markers based on fences being monitored 
+
+
 				map = mMapFragment.getMap();
 				map.setMyLocationEnabled(true);
-				map.setOnMapLoadedCallback(this);
-				map.setOnMyLocationChangeListener(this);
+				map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+                    @Override
+                    public void onMapLoaded() {
+                        for (NotificareRegion region : Notificare.shared().getRegions()) {
+
+                            map.addCircle(new CircleOptions()
+                                .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
+                                .radius(region.getDistance())
+                                .fillColor(R.color.wildsand)
+                                .strokeColor(0)
+                                .strokeWidth(0));
+                        }
+
+
+                    }
+                });
+				map.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
+                    @Override
+                    public void onMyLocationChange(Location location) {
+
+                        //LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 13));
+                    }
+                });
+
+
 
 		        // update selected item and title, then close the drawer
 		        mDrawerList.setItemChecked(position, true);
 		        setTitle(navigationLabels[position]);
-		        
+
 			} else if (second.equals("Beacons")) {
 
                 startActivity(new Intent(MainActivity.this, BeaconsActivity.class));
@@ -274,7 +310,7 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
             } else if (second.equals("Settings")) {
 
 				startActivity(new Intent(MainActivity.this, UserPreferencesActivity.class));
-				
+
 			} else if (second.equals("Inbox")) {
 
                 startActivity(new Intent(MainActivity.this, InboxActivity.class));
@@ -282,6 +318,19 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
             } else if (second.equals("Products")) {
 
                 startActivity(new Intent(MainActivity.this, ProductsActivity.class));
+
+            } else if (second.equals("Main")) {
+
+                Fragment fragment = new MainFragment();
+                Bundle args = new Bundle();
+                args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
+                fragment.setArguments(args);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                // update selected item and title, then close the drawer
+                mDrawerList.setItemChecked(position, true);
+                setTitle(navigationLabels[position]);
 
             } else {
 
@@ -342,565 +391,6 @@ public class MainActivity extends Activity implements OnMapLoadedCallback, OnMyL
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
- 
-    /**
-     * Fragment with a WebView
-     */
-    public static class WebViewFragment extends Fragment {
-        public static final String ARG_NAVIGATION_NUMBER = "navigation_pos";
-
-        public WebViewFragment() {
-            // Empty constructor required for fragment subclasses
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_webview, container, false);
-            int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
-            String label = getResources().getStringArray(R.array.navigation_labels)[i];
-            String url = getResources().getStringArray(R.array.navigation_urls)[i];
-
-            WebView webView =  (WebView) rootView.findViewById(R.id.webView);
-            WebSettings webSettings = webView.getSettings();
-            webSettings.setJavaScriptEnabled(true);
-            webView.loadUrl(url);
-            webView.setWebViewClient(new WebViewClient() {
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    view.loadUrl(url);
-                    return true;
-                }
-            });
-            getActivity().setTitle(label);
-            return rootView;
-        }
-    }
-
-    /**
-     * Fragment with a WebView
-     */
-    public static class SignInFragment extends Fragment {
-        public static final String ARG_NAVIGATION_NUMBER = "navigation_pos";
-
-        public SignInFragment() {
-            // Empty constructor required for fragment subclasses
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.fragment_signin, container, false);
-            final int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
-            String label = getResources().getStringArray(R.array.navigation_labels)[i];
-            String url = getResources().getStringArray(R.array.navigation_urls)[i];
-
-            rootView.findViewById(R.id.buttonSignin).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //signIn();
-
-                    EditText emailField = (EditText) rootView.findViewById(R.id.email);
-                    EditText passwordField = (EditText) rootView.findViewById(R.id.pass);
-
-                    String email = emailField.getText().toString();
-                    String password = passwordField.getText().toString();
-
-                    TextView info = (TextView) rootView.findViewById(R.id.infoText);
-
-
-                    if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
-                        info.setText(R.string.error_sign_in);
-                    } else if (password.length() < 6) {
-                        info.setText(R.string.error_pass_too_short);
-                    } else if (!email.contains("@")) {
-                        info.setText(R.string.error_invalid_email);
-                    } else {
-
-                        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_signin), true);
-
-
-                        Notificare.shared().userLogin(email, password, new NotificareCallback<Boolean>() {
-
-                            @Override
-                            public void onError(NotificareError error) {
-                                dialog.dismiss();
-
-                            }
-
-                            @Override
-                            public void onSuccess(Boolean result) {
-
-                                Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
-
-                                    @Override
-                                    public void onError(NotificareError error) {
-                                        dialog.dismiss();
-                                    }
-
-                                    @Override
-                                    public void onSuccess(NotificareUser user) {
-                                        Notificare.shared().setUserId(user.getUserId());
-                                        Notificare.shared().registerDevice(Notificare.shared().getDeviceId(), user.getUserId(), user.getUserName(), new NotificareCallback<String>() {
-
-                                            @Override
-                                            public void onSuccess(String result) {
-
-                                                Fragment fragment = new UserProfileFragment();
-                                                Bundle args = new Bundle();
-                                                args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, i);
-                                                fragment.setArguments(args);
-                                                FragmentManager fragmentManager = getFragmentManager();
-                                                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-                                                dialog.dismiss();
-                                            }
-
-                                            @Override
-                                            public void onError(NotificareError error) {
-                                                dialog.dismiss();
-                                            }
-
-                                        });
-                                    }
-
-                                });
-
-                            }
-
-                        });
-                    }
-                }
-            });
-            getActivity().setTitle(label);
-            return rootView;
-        }
-    }
-    
-    
-    /**
-     * Fragment with a User profile
-     */
-    public static class UserProfileFragment extends Fragment {
-        public static final String ARG_NAVIGATION_NUMBER = "navigation_pos";
-
-        public UserProfileFragment() {
-            // Empty constructor required for fragment subclasses
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_user_profile, container, false);
-            int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
-            String label = getResources().getStringArray(R.array.navigation_labels)[i];
-            //String url = getResources().getStringArray(R.array.navigation_urls)[i];
-            final ListView userProfileList =  (ListView) rootView.findViewById(R.id.userProfileList);
-            final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader), true);
-
-            if(Notificare.shared().isLoggedIn())
-                Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
-
-                    @Override
-                    public void onSuccess(NotificareUser userResult) {
-
-                        final NotificareUser result = userResult;
-                        Notificare.shared().fetchUserPreferences(new NotificareCallback<List<NotificareUserPreference>>() {
-                            @Override
-                            public void onSuccess(List<NotificareUserPreference> notificareUserPreferences) {
-
-                                final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-                                final ArrayList<NotificareUserPreference> prefs = new ArrayList<NotificareUserPreference>();
-
-                                HashMap<String, String> header1 = new HashMap<String, String>();
-                                header1.put("label", getString(R.string.header_user_profile));
-                                list.add(header1);
-
-                                HashMap<String, String> userProfile = new HashMap<String, String>();
-                                userProfile.put("name", result.getUserName());
-                                userProfile.put("email", result.getUserId());
-                                userProfile.put("token", result.getAccessToken() + "@pushmail.notifica.re");
-                                userProfile.put("icon", result.getUserId());
-                                userProfile.put("label", "user_profile");
-                                userProfile.put("action", result.getUserId());
-                                list.add(userProfile);
-
-                                final HashMap<String, String> changePass = new HashMap<String, String>();
-                                changePass.put("label", getString(R.string.title_change_pass));
-                                list.add(changePass);
-
-                                HashMap<String, String> generateToken = new HashMap<String, String>();
-                                generateToken.put("label", getString(R.string.title_generate_token));
-                                list.add(generateToken);
-
-                                HashMap<String, String> header2 = new HashMap<String, String>();
-                                header2.put("label", getString(R.string.header_user_preferences));
-                                list.add(header2);
-
-                                for (NotificareUserPreference preferenceObj : notificareUserPreferences) {
-                                    prefs.add(preferenceObj);
-                                    HashMap<String, String> pref = new HashMap<String, String>();
-                                    pref.put("label", preferenceObj.getLabel());
-                                    pref.put("preferenceId", preferenceObj.getId());
-
-                                    if(preferenceObj.getPreferenceType().equals("choice")){
-                                        for (NotificareUserPreferenceOption segmentObj : preferenceObj.getPreferenceOptions()) {
-                                            if(segmentObj.isSelected()){
-                                                pref.put("name", segmentObj.getLabel());
-                                            }
-                                        }
-                                    }
-
-                                    if(preferenceObj.getPreferenceType().equals("single")){
-                                        for (NotificareUserPreferenceOption segmentObj : preferenceObj.getPreferenceOptions()) {
-                                            pref.put("segmentId", segmentObj.getUserSegmentId());
-                                            if(segmentObj.isSelected()){
-                                                pref.put("selected", "1");
-                                            }
-                                        }
-                                    }
-                                    list.add(pref);
-                                }
-
-                                ListAdapter adapter = new UserProfileAdapter(getActivity(), list, prefs);
-
-                                userProfileList.setAdapter(adapter);
-
-                                userProfileList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                                    @Override
-                                    public void onItemClick(AdapterView<?> aView, View view, int position,
-                                                            long arg) {
-
-                                        if(list.get(position).get("label").equals(getString(R.string.title_change_pass))){
-                                            onChangePassword();
-                                        }
-
-                                        if(list.get(position).get("label").equals(getString(R.string.title_generate_token))){
-                                            onGenerateToken();
-                                        }
-
-                                        if(list.get(position).get("preferenceId") != null){
-
-                                            NotificareUserPreference preference = prefs.get(position - 5);
-
-                                            if(preference.getPreferenceType().equals("choice")){
-                                                showSingleChoiceOptions(prefs.get(position - 5));
-                                            } else {
-                                                showMultiChoiceOptions(prefs.get(position - 5));
-                                            }
-
-
-                                        }
-
-
-                                    }
-                                });
-                                dialog.dismiss();
-                            }
-
-                            @Override
-                            public void onError(NotificareError notificareError) {
-
-                                dialog.dismiss();
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onError(NotificareError error) {
-                        if (error.getCode() == NotificareError.FORBIDDEN || error.getCode() == NotificareError.UNAUTHORIZED) {
-                            dialog.dismiss();
-                            Toast.makeText(Notificare.shared().getApplicationContext(), "Unauthorized access", Toast.LENGTH_LONG).show();
-                        } else {
-                            dialog.dismiss();
-                            Toast.makeText(Notificare.shared().getApplicationContext(), "Error fetching user details", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-            
-            getActivity().setTitle(label);
-            return rootView;
-        }
-
-        public void onChangePassword(){
-
-                AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
-
-                LinearLayout layout = new LinearLayout(this.getActivity().getBaseContext());
-                layout.setOrientation(LinearLayout.VERTICAL);
-
-                alert.setTitle(getString(R.string.app_name));
-                alert.setMessage(getString(R.string.title_change_pass));
-
-                final EditText pass1 = new EditText(this.getActivity());
-                final EditText pass2 = new EditText(this.getActivity());
-                pass1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                pass2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                layout.addView(pass1);
-                layout.addView(pass2);
-                alert.setView(layout);
-
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-
-                        if (!pass1.getText().toString().equals(pass2.getText().toString())) {
-                            onChangePasswordError(getString(R.string.error_pass_not_match));
-                        } else if (pass1.getText().toString() == null && pass2.getText().toString() == null) {
-                            onChangePasswordError(getString(R.string.error_reset_pass));
-                        } else if (pass1.getText().toString().length() < 5) {
-                            onChangePasswordError(getString(R.string.error_pass_too_short));
-                        } else {
-                            doChangePassword(pass1);
-                        }
-                    }
-                });
-
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
-
-                alert.show();
-
-        }
-
-        public void doChangePassword(EditText pass){
-            final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_signin), true);
-            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
-
-            String password = pass.getText().toString();
-            Notificare.shared().changePassword(password, new NotificareCallback<Boolean>() {
-                @Override
-                public void onSuccess(Boolean aBoolean) {
-                    dialog.dismiss();
-                    alert.setTitle(getString(R.string.app_name));
-                    alert.setMessage(getString(R.string.success_change_password));
-                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-
-                        }
-                    });
-                    alert.show();
-
-                }
-
-                @Override
-                public void onError(NotificareError notificareError) {
-                    dialog.dismiss();
-                    alert.setTitle(getString(R.string.app_name));
-                    alert.setMessage(getString(R.string.error_change_password));
-                    alert.show();
-
-                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-
-                        }
-                    });
-                }
-            });
-        }
-
-        public void onChangePasswordError(String error){
-            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
-            alert.setTitle(getString(R.string.app_name));
-            alert.setMessage(error);
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-
-                }
-            });
-            alert.show();
-        }
-
-        public void onGenerateToken(){
-
-            final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_generate_token), true);
-            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
-
-
-            Notificare.shared().generateAccessToken(new NotificareCallback<NotificareUser>() {
-                @Override
-                public void onSuccess(NotificareUser notificareUser) {
-                    dialog.dismiss();
-                    alert.setTitle(getString(R.string.app_name));
-                    alert.setMessage(getString(R.string.success_generate_token));
-                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-
-                            int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
-                            Fragment fragment = new UserProfileFragment();
-                            Bundle args = new Bundle();
-                            args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, i);
-                            fragment.setArguments(args);
-                            FragmentManager fragmentManager = getFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-                        }
-                    });
-                    alert.show();
-                }
-
-                @Override
-                public void onError(NotificareError notificareError) {
-                    dialog.dismiss();
-                    alert.setTitle(getString(R.string.app_name));
-                    alert.setMessage(getString(R.string.error_generate_token));
-                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-
-                        }
-                    });
-                    alert.show();
-                }
-            });
-        }
-
-        public void showSingleChoiceOptions(final NotificareUserPreference preference){
-            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
-            alert.setTitle(getString(R.string.app_name));
-
-            ArrayList<String> tmpList =  new ArrayList<String>();
-            int selectedPosition = 0;
-            for(int i = 0; i < preference.getPreferenceOptions().size(); i++){
-                if(preference.getPreferenceOptions().get(i).isSelected()){
-                    selectedPosition = i;
-                }
-                tmpList.add(preference.getPreferenceOptions().get(i).getLabel());
-            }
-
-            CharSequence[] charSeqOfNames = tmpList.toArray(new CharSequence[tmpList.size()]);
-            boolean bl[] = new boolean[tmpList.size()];
-
-            alert.setSingleChoiceItems(charSeqOfNames, selectedPosition, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-
-                    Notificare.shared().userSegmentAddToUserPreference(preference.getPreferenceOptions().get(which).getUserSegmentId(), preference, new NotificareCallback<Boolean>() {
-                        @Override
-                        public void onSuccess(Boolean aBoolean) {
-
-
-                        }
-
-                        @Override
-                        public void onError(NotificareError notificareError) {
-
-                        }
-                    });
-
-                }
-            });
-
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-
-                    refreshFragment();
-
-                }
-            });
-            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    // Canceled.
-                }
-            });
-
-            alert.show();
-        }
-
-        public void showMultiChoiceOptions(final NotificareUserPreference preference){
-            final AlertDialog.Builder alert = new AlertDialog.Builder(this.getActivity());
-            alert.setTitle(getString(R.string.app_name));
-
-            ArrayList<String> tmpList =  new ArrayList<String>();
-            boolean bl[] = new boolean[preference.getPreferenceOptions().size()];
-            int index = 0;
-            for(NotificareUserPreferenceOption option : preference.getPreferenceOptions()){
-                bl[index++] = option.isSelected();
-                tmpList.add(option.getLabel());
-            }
-
-            CharSequence[] charSeqOfNames = tmpList.toArray(new CharSequence[tmpList.size()]);
-
-            alert.setMultiChoiceItems(charSeqOfNames, bl, new DialogInterface.OnMultiChoiceClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
-                    if(isChecked){
-
-                        Notificare.shared().userSegmentAddToUserPreference(preference.getPreferenceOptions().get(which).getUserSegmentId(), preference, new NotificareCallback<Boolean>() {
-                            @Override
-                            public void onSuccess(Boolean aBoolean) {
-
-
-                            }
-
-                            @Override
-                            public void onError(NotificareError notificareError) {
-
-                            }
-                        });
-
-                    } else {
-
-                        Notificare.shared().userSegmentRemoveFromUserPreference(preference.getPreferenceOptions().get(which).getUserSegmentId(), preference, new NotificareCallback<Boolean>() {
-                            @Override
-                            public void onSuccess(Boolean aBoolean) {
-
-
-                            }
-
-                            @Override
-                            public void onError(NotificareError notificareError) {
-
-                            }
-                        });
-
-                    }
-                }
-            });
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    refreshFragment();
-                }
-            });
-            alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    // Canceled.
-                }
-            });
-            alert.show();
-        }
-
-        public void refreshFragment(){
-            int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
-            Fragment fragment = new UserProfileFragment();
-            Bundle args = new Bundle();
-            args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, i);
-            fragment.setArguments(args);
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        }
-    }
-
-	@Override
-	public void onMapLoaded() {
-		// TODO Add markers based on 
-		
-	}
-
-	@Override
-	public void onMyLocationChange(Location arg0) {
-		LatLng userLocation = new LatLng(arg0.getLatitude(), arg0.getLongitude());
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 13));
-//		map.addMarker(new MarkerOptions()
-//		.title("Your current location")
-//		.position(userLocation));
-	}
 
 
 

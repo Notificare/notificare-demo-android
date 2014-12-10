@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -22,8 +22,7 @@ android {
 repositories {
     mavenCentral()
     maven {
-        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
-//        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
+        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
     }
     flatDir {
         dirs 'libs'
@@ -32,7 +31,7 @@ repositories {
 
 dependencies {
     compile 'com.loopj.android:android-async-http:1.4.5'
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.2.0-SNAPSHOT', ext:'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.2.0', ext:'aar', transitive: true
     compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.0', ext: 'aar', transitive: true
 }
 
