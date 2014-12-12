@@ -31,10 +31,10 @@ repositories {
 
 dependencies {
     compile 'com.loopj.android:android-async-http:1.4.5'
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.2.0', ext:'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.2.1', ext:'aar', transitive: true
     compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.0', ext: 'aar', transitive: true
 }
 
-//configurations.all {
-//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-//}
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}

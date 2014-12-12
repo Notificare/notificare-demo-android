@@ -4,32 +4,28 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:orientation="vertical"
-    android:focusableInTouchMode="true" >
+    android:focusableInTouchMode="true"
+    android:background="@color/wildsand">
     
 	<ScrollView android:id="@+id/ScrlView" 
 	    android:layout_width="fill_parent" 
-	    android:layout_height="fill_parent" >
+	    android:layout_height="fill_parent"
+        android:background="@color/wildsand">
 		<LinearLayout 
 	        android:id="@+id/layoutForScroll" 
 	        android:orientation="vertical" 
 	        android:layout_width="fill_parent" 
-	        android:layout_height="wrap_content"
-	        android:background="@android:color/white" >
-
-			<TextView android:id="@+id/infoText"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_margin="10dp"
-              android:layout_marginTop="20dp"
-              android:layout_marginBottom="20dp"
-              android:text="" />
-
+	        android:layout_height="fill_parent"
+	        android:background="@color/wildsand" >
 
 			<EditText 
-				android:id="@+id/email"
+				android:id="@+id/emailField"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:layout_margin="10dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
 				android:inputType="textEmailAddress"
 				android:hint="@string/hint_email" >
 			</EditText>
@@ -37,10 +33,13 @@
 			<Button
 				android:id="@+id/buttonLostPass"
 				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:textColor="#FFFFFF"
-				android:background="#3d3b37"
-				android:layout_margin="10dp"
+                android:layout_height="60dp"
+                android:textColor="#FFFFFF"
+                android:background="@color/mantis"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
 				android:text="@string/button_lost_pass"
 				android:textSize="20dp"
 				 />

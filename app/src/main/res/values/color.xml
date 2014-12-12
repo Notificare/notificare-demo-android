@@ -8,4 +8,5 @@
 	<color name="merlin">#3D3B37</color>
 	<color name="mantis">#40CAAB</color>
 	<color name="redOrange">#FF3B30</color>
+    <color name="grey">#888888</color>
 </resources>

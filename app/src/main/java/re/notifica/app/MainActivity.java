@@ -8,10 +8,17 @@ import java.util.StringTokenizer;
 import re.notifica.Notificare;
 import re.notifica.NotificareCallback;
 import re.notifica.NotificareError;
+import re.notifica.beacon.BeaconRangingListener;
+import re.notifica.billing.BillingManager;
+import re.notifica.billing.BillingResult;
+import re.notifica.billing.Purchase;
+import re.notifica.model.NotificareBeacon;
+import re.notifica.model.NotificareProduct;
 import re.notifica.model.NotificareRegion;
 import re.notifica.model.NotificareUser;
 import re.notifica.model.NotificareUserPreference;
 import re.notifica.model.NotificareUserPreferenceOption;
+import re.notifica.push.gcm.BaseActivity;
 import re.notifica.ui.UserPreferencesActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -50,6 +57,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.*;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -63,25 +71,29 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class MainActivity extends Activity  {
+public class MainActivity extends BaseActivity implements BeaconRangingListener,Notificare.OnBillingReadyListener, BillingManager.OnRefreshFinishedListener, BillingManager.OnPurchaseFinishedListener {
 
     public GoogleMap map;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-
+    private Boolean inProgress = false;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] navigationLabels;
     private ProgressDialog dialog;
     public Typeface myTypeface;
-
+    protected ArrayAdapter<NotificareProduct> productListAdapter;
+    private Menu mOptionsMenu;
     protected static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        productListAdapter = new ProductListAdapter(this, R.layout.product_list_cell);
+
 
         myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lato-Hairline.ttf");
 
@@ -154,7 +166,7 @@ public class MainActivity extends Activity  {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-
+        mOptionsMenu = menu;
         if(Notificare.shared().isLoggedIn()) {
             inflater.inflate(R.menu.user, menu);
         }else{
@@ -171,7 +183,7 @@ public class MainActivity extends Activity  {
         if(Notificare.shared().isLoggedIn()) {
             menu.findItem(R.id.action_signout).setVisible(!drawerOpen);
         }else {
-            menu.findItem(R.id.action_ibeacons).setVisible(!drawerOpen);
+            menu.findItem(R.id.action_ibeacons).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -195,14 +207,14 @@ public class MainActivity extends Activity  {
                 @Override
                 public void onSuccess(Boolean result) {
 
-                    Fragment fragment = new WebViewFragment();
+                    SignInFragment fragment = new SignInFragment();
                     Bundle args = new Bundle();
-                    args.putInt(WebViewFragment.ARG_NAVIGATION_NUMBER, 0);
+                    args.putInt(WebViewFragment.ARG_NAVIGATION_NUMBER, 4);
                     fragment.setArguments(args);
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-                    mDrawerList.setItemChecked(0, true);
-                    setTitle(navigationLabels[0]);
+                    mDrawerList.setItemChecked(4, true);
+                    setTitle(navigationLabels[4]);
 
                 }
 
@@ -214,13 +226,53 @@ public class MainActivity extends Activity  {
 
             return true;
         case R.id.action_ibeacons:
-            Intent a = new Intent(MainActivity.this, BeaconsActivity.class);
-            startActivity(a);
+            BeaconsFragment beaconsFragment = new BeaconsFragment();
+            Bundle args = new Bundle();
+            args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, 3);
+            beaconsFragment.setArguments(args);
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, beaconsFragment).commit();
+
+            // update selected item and title, then close the drawer
+            mDrawerList.setItemChecked(3, true);
+            setTitle(navigationLabels[3]);
             return true;
         default:
             return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onRangingBeacons(final List<NotificareBeacon> notificareBeacons) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (notificareBeacons.size() > 0) {
+                    Log.d(TAG, "HEY THERE");
+                    mOptionsMenu.getItem(0).setVisible(true);
+                } else {
+                    Log.d(TAG, "HEY NOT THERE");
+                    mOptionsMenu.getItem(0).setVisible(false);
+                }
+
+                switch(mOptionsMenu.getItem(0).getItemId()) {
+                    case R.id.action_ibeacons:
+                        if (notificareBeacons.size() > 0) {
+                            Log.d(TAG, "HEY THERE");
+                            mOptionsMenu.getItem(0).setVisible(true);
+                        } else {
+                            Log.d(TAG, "HEY NOT THERE");
+                            mOptionsMenu.getItem(0).setVisible(false);
+                        }
+                        break;
+                }
+            }
+
+        });
+    }
+
 
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -292,8 +344,10 @@ public class MainActivity extends Activity  {
                     @Override
                     public void onMyLocationChange(Location location) {
 
-                        //LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 13));
+                        float zoom = map.getCameraPosition().zoom;
+
+                        LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoom));
                     }
                 });
 
@@ -305,7 +359,18 @@ public class MainActivity extends Activity  {
 
 			} else if (second.equals("Beacons")) {
 
-                startActivity(new Intent(MainActivity.this, BeaconsActivity.class));
+                BeaconsFragment beaconsFragment = new BeaconsFragment();
+                Bundle args = new Bundle();
+                args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
+                beaconsFragment.setArguments(args);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, beaconsFragment).commit();
+
+                // update selected item and title, then close the drawer
+                mDrawerList.setItemChecked(position, true);
+                setTitle(navigationLabels[position]);
+
+                //startActivity(new Intent(MainActivity.this, BeaconsActivity.class));
 
             } else if (second.equals("Settings")) {
 
@@ -317,7 +382,19 @@ public class MainActivity extends Activity  {
 
             } else if (second.equals("Products")) {
 
-                startActivity(new Intent(MainActivity.this, ProductsActivity.class));
+                ProductsFragment fragment = new ProductsFragment();
+                fragment.productListAdapter = productListAdapter;
+                Bundle args = new Bundle();
+                args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
+                fragment.setArguments(args);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                // update selected item and title, then close the drawer
+                mDrawerList.setItemChecked(position, true);
+                setTitle(navigationLabels[position]);
+
+                //startActivity(new Intent(MainActivity.this, ProductsActivity.class));
 
             } else if (second.equals("Main")) {
 
@@ -415,6 +492,54 @@ public class MainActivity extends Activity  {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (Notificare.shared().getBillingManager().handleActivityResult(requestCode, resultCode, data)) {
+            // Billingmanager handled the result
+            inProgress = true; // wait for purchase to finish before doing other calls
+        } else {
+            // Something else came back to us
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Notificare.shared().addBillingReadyListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Notificare.shared().removeBillingReadyListener(this);
+    }
+
+    @Override
+    public void onBillingReady() {
+        if (!inProgress) {
+            productListAdapter.clear();
+            Notificare.shared().getBillingManager().refresh(this);
+        }
+    }
+
+    @Override
+    public void onPurchaseFinished(BillingResult billingResult, Purchase purchase) {
+        inProgress = false;
+        productListAdapter.clear();
+        Notificare.shared().getBillingManager().refresh(this);
+    }
+
+    @Override
+    public void onRefreshFinished() {
+        productListAdapter.addAll(Notificare.shared().getBillingManager().getProducts());
+    }
+
+    @Override
+    public void onRefreshFailed(NotificareError notificareError) {
+        Toast.makeText(this, "billing refresh failed: " + notificareError.getMessage(), Toast.LENGTH_LONG).show();
     }
 
 }

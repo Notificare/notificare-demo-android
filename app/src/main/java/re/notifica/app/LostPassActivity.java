@@ -4,24 +4,34 @@ import re.notifica.Notificare;
 import re.notifica.NotificareCallback;
 import re.notifica.NotificareError;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 public class LostPassActivity extends Activity {
 	
 	private EditText emailField;
-	private TextView info;
 	private ProgressDialog dialog;
+    private AlertDialog.Builder builder;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lostpass);
-		
+        Button lostPassButton = (Button) findViewById(R.id.buttonLostPass);
+        Typeface lightFont = Typeface.createFromAsset(this.getAssets(), "fonts/Lato-Light.ttf");
+        Typeface regularFont = Typeface.createFromAsset(this.getAssets(), "fonts/Lato-Regular.ttf");
+        builder = new AlertDialog.Builder(this);
+        emailField = (EditText) findViewById(R.id.emailField);
+        emailField.setTypeface(lightFont);
+        lostPassButton.setTypeface(lightFont);
 		findViewById(R.id.buttonLostPass).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -31,18 +41,33 @@ public class LostPassActivity extends Activity {
 	}
 	
 	public void recoverPassword() {
-		
-		emailField = (EditText) findViewById(R.id.email);
 
 		String email = emailField.getText().toString();
-		
-		info = (TextView) findViewById(R.id.infoText);
-		
-		
+
 		if (TextUtils.isEmpty(email) ) {
-			info.setText(R.string.error_lost_pass);
+			//info.setText(R.string.error_lost_pass);
+            builder.setMessage(R.string.error_lost_pass)
+                    .setTitle(R.string.app_name)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //do things
+                        }
+                    });
+            AlertDialog dialogInfo = builder.create();
+            dialogInfo.show();
 		}  else if (!email.contains("@")) {
-			info.setText(R.string.error_invalid_email);
+			//info.setText(R.string.error_lost_pass);
+            builder.setMessage(R.string.error_lost_pass)
+                    .setTitle(R.string.app_name)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //do things
+                        }
+                    });
+            AlertDialog dialogInfo = builder.create();
+            dialogInfo.show();
 		} else {
 			dialog = ProgressDialog.show(LostPassActivity.this, "", getString(R.string.loader_connection), true);
 			
@@ -50,15 +75,35 @@ public class LostPassActivity extends Activity {
 
 				@Override
 				public void onError(NotificareError arg0) {
-					info = (TextView) findViewById(R.id.infoText);
-					info.setText(arg0.getMessage());
+					//info = (TextView) findViewById(R.id.infoText);
+					///info.setText(arg0.getMessage());
 					dialog.dismiss();
+                    builder.setMessage(arg0.getMessage())
+                            .setTitle(R.string.app_name)
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                }
+                            });
+                    AlertDialog dialogInfo = builder.create();
+                    dialogInfo.show();
 				}
 
 				@Override
 				public void onSuccess(Boolean arg0) {
-					info = (TextView) findViewById(R.id.infoText);
-					info.setText(R.string.success_email_found);
+					//info = (TextView) findViewById(R.id.infoText);
+					//info.setText(R.string.success_email_found);
+                    builder.setMessage(R.string.success_email_found)
+                            .setTitle(R.string.app_name)
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                }
+                            });
+                    AlertDialog dialogInfo = builder.create();
+                    dialogInfo.show();
 					dialog.dismiss();
 				}
 				

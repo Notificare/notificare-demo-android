@@ -26,7 +26,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="21" />
 
     <application
         android:name="re.notifica.app.AppBaseApplication"
@@ -77,7 +77,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/resetpassword/54860e77eba74e971d3cfcd0" />
+                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/resetpassword/5489b42ff23e5815132b492a" />
             </intent-filter>
         </activity>
         <activity
@@ -89,7 +89,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/validate/54860e77eba74e971d3cfcd0" /> //Replace with your own app ID
+                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/validate/5489b42ff23e5815132b492a" /> //Replace with your own app ID
             </intent-filter>
         </activity>
         <activity

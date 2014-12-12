@@ -2,80 +2,85 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@color/wildsand">
 
     <ScrollView android:id="@+id/ScrlView"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:background="@color/wildsand">
         <LinearLayout
             android:id="@+id/layoutForScroll"
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white" >
-
-            <TextView android:id="@+id/infoText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="" />
+            android:layout_height="fill_parent"
+            android:background="@color/wildsand" >
 
             <EditText
                 android:id="@+id/email"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="60dp"
                 android:inputType="textEmailAddress"
-                android:hint="@string/hint_email" >
+                android:hint="@string/hint_email"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp">
             </EditText>
 
             <EditText
                 android:id="@+id/pass"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:inputType="textPassword"
                 android:hint="@string/hint_pass" >
             </EditText>
 
+
+            <Button
+                android:id="@+id/buttonLostPass"
+                android:layout_width="fill_parent"
+                android:layout_height="28dp"
+                android:textColor="@color/grey"
+                android:background="@color/wildsand"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/button_forgot_pass"
+                android:textSize="16sp"
+                android:onClick="goToLostPass"
+                android:textAlignment="viewEnd"
+                android:gravity="bottom|end" />
+
             <Button
                 android:id="@+id/buttonSignin"
                 android:layout_width="fill_parent"
-                android:layout_height="48dp"
+                android:layout_height="60dp"
                 android:textColor="#FFFFFF"
-                android:background="#3d3b37"
-                android:layout_margin="10dp"
+                android:background="@color/mantis"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
                 android:text="@string/button_sign_in"
                 android:textSize="20sp"
                 />
 
             <Button
-                android:id="@+id/buttonLostPass"
-                android:layout_width="fill_parent"
-                android:layout_height="48dp"
-                android:textColor="#FFFFFF"
-                android:background="#3d3b37"
-                android:layout_margin="10dp"
-                android:text="@string/title_lost_pass"
-                android:textSize="20sp"
-                android:onClick="goToLostPass"
-                />
-
-            <Button
                 android:id="@+id/buttonSignup"
                 android:layout_width="fill_parent"
-                android:layout_height="48dp"
+                android:layout_height="60dp"
                 android:textColor="#FFFFFF"
-                android:background="#3d3b37"
-                android:layout_margin="10dp"
+                android:background="@color/mantis"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/title_sign_up"
+                android:text="@string/button_sign_up"
                 android:textSize="20sp"
                 android:onClick="goToSignup"
-                />
+                android:layout_gravity="bottom" />
 
 
         </LinearLayout>

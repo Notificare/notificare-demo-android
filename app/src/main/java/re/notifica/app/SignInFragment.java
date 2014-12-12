@@ -1,8 +1,11 @@
 package re.notifica.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -10,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -37,26 +41,68 @@ public class SignInFragment extends Fragment {
         String label = getResources().getStringArray(R.array.navigation_labels)[i];
         String url = getResources().getStringArray(R.array.navigation_urls)[i];
 
+        Typeface lightFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+        Typeface regularFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
+
+        Button lostPassButton = (Button) rootView.findViewById(R.id.buttonLostPass);
+        Button signUpButton = (Button) rootView.findViewById(R.id.buttonSignup);
+        Button signInButton = (Button) rootView.findViewById(R.id.buttonSignin);
+        final EditText emailField = (EditText) rootView.findViewById(R.id.email);
+        final EditText passwordField = (EditText) rootView.findViewById(R.id.pass);
+
+        emailField.setTypeface(lightFont);
+        passwordField.setTypeface(lightFont);
+        signInButton.setTypeface(lightFont);
+        signUpButton.setTypeface(lightFont);
+        lostPassButton.setTypeface(lightFont);
+
         rootView.findViewById(R.id.buttonSignin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //signIn();
 
-                EditText emailField = (EditText) rootView.findViewById(R.id.email);
-                EditText passwordField = (EditText) rootView.findViewById(R.id.pass);
-
                 String email = emailField.getText().toString();
                 String password = passwordField.getText().toString();
 
-                TextView info = (TextView) rootView.findViewById(R.id.infoText);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
 
                 if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password)) {
-                    info.setText(R.string.error_sign_in);
+                    //info.setText(R.string.error_sign_in);
+                    builder.setMessage(R.string.error_sign_in)
+                            .setTitle(R.string.app_name)
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                }
+                            });
+                    AlertDialog dialogInfo = builder.create();
+                    dialogInfo.show();
                 } else if (password.length() < 6) {
-                    info.setText(R.string.error_pass_too_short);
+                    //info.setText(R.string.error_pass_too_short);
+                    builder.setMessage(R.string.error_pass_too_short)
+                            .setTitle(R.string.app_name)
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                }
+                            });
+                    AlertDialog dialogInfo = builder.create();
+                    dialogInfo.show();
                 } else if (!email.contains("@")) {
-                    info.setText(R.string.error_invalid_email);
+                    builder.setMessage(R.string.error_invalid_email)
+                            .setTitle(R.string.app_name)
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //do things
+                                }
+                            });
+                    AlertDialog dialogInfo = builder.create();
+                    dialogInfo.show();
+                    //info.setText(R.string.error_invalid_email);
                 } else {
 
                     final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader_signin), true);
@@ -67,7 +113,18 @@ public class SignInFragment extends Fragment {
                         @Override
                         public void onError(NotificareError error) {
                             dialog.dismiss();
-
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setMessage(R.string.error_sign_in)
+                                    .setTitle(R.string.app_name)
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            //do things
+                                        }
+                                    });
+                            AlertDialog dialogInfo = builder.create();
+                            dialogInfo.show();
+                            passwordField.setText(null);
                         }
 
                         @Override
@@ -78,6 +135,18 @@ public class SignInFragment extends Fragment {
                                 @Override
                                 public void onError(NotificareError error) {
                                     dialog.dismiss();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setMessage(R.string.error_sign_in)
+                                            .setTitle(R.string.app_name)
+                                            .setCancelable(false)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    //do things
+                                                }
+                                            });
+                                    AlertDialog dialogInfo = builder.create();
+                                    dialogInfo.show();
+                                    passwordField.setText(null);
                                 }
 
                                 @Override
@@ -94,13 +163,26 @@ public class SignInFragment extends Fragment {
                                             fragment.setArguments(args);
                                             FragmentManager fragmentManager = getFragmentManager();
                                             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
+                                            emailField.setText(null);
+                                            passwordField.setText(null);
                                             dialog.dismiss();
                                         }
 
                                         @Override
                                         public void onError(NotificareError error) {
                                             dialog.dismiss();
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                            builder.setMessage(R.string.error_sign_in)
+                                                    .setTitle(R.string.app_name)
+                                                    .setCancelable(false)
+                                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int id) {
+                                                            //do things
+                                                        }
+                                                    });
+                                            AlertDialog dialogInfo = builder.create();
+                                            dialogInfo.show();
+                                            passwordField.setText(null);
                                         }
 
                                     });

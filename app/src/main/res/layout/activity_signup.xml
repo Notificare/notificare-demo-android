@@ -4,58 +4,61 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:orientation="vertical"
-    android:focusableInTouchMode="true" >
+    android:focusableInTouchMode="true"
+    android:background="@color/wildsand">
     
 	<ScrollView android:id="@+id/ScrlView" 
 	    android:layout_width="fill_parent" 
-	    android:layout_height="fill_parent" >
+	    android:layout_height="fill_parent"
+        android:background="@color/wildsand">
 		<LinearLayout 
 	        android:id="@+id/layoutForScroll" 
 	        android:orientation="vertical" 
 	        android:layout_width="fill_parent" 
-	        android:layout_height="wrap_content"
-	        android:background="@android:color/white" >
+	        android:layout_height="fill_parent"
+	        android:background="@color/wildsand" >
 
-			<TextView android:id="@+id/infoText"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_margin="10dp"
-              android:layout_marginTop="20dp"
-              android:layout_marginBottom="20dp"
-              android:text="" />
 
 			<EditText 
-				android:id="@+id/name"
+				android:id="@+id/nameField"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:layout_margin="10dp"
-				android:layout_marginTop="20dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
 				android:hint="@string/hint_name" >
 			</EditText>
 			
 			<EditText 
-				android:id="@+id/email"
+				android:id="@+id/emailField"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:layout_margin="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
 				android:inputType="textEmailAddress"
 				android:hint="@string/hint_email" >
 			</EditText>
 			
 			<EditText 
-				android:id="@+id/pass"
+				android:id="@+id/passField"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:layout_margin="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
 				android:inputType="textPassword"
 				android:hint="@string/hint_pass" >
 			</EditText>
 			
 			<EditText 
-				android:id="@+id/confirmPass"
+				android:id="@+id/confirmPassField"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:layout_margin="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
 				android:inputType="textPassword"
 				android:hint="@string/hint_confirm_pass" >
 			</EditText>
@@ -63,10 +66,13 @@
 			<Button
 				android:id="@+id/buttonSignup"
 				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:textColor="#FFFFFF"
-				android:background="#3d3b37"
-				android:layout_margin="10dp"
+                android:layout_height="60dp"
+                android:textColor="#FFFFFF"
+                android:background="@color/mantis"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
 				android:text="@string/button_sign_up"
 				android:textSize="20dp"
 				 />

@@ -5,7 +5,6 @@
 
     <string-array name="navigation_labels">
         <item>Notificare</item>
-        <item>About</item>
         <item>Products</item>
         <item>Locations</item>
         <item>Beacons</item>
@@ -15,7 +14,6 @@
     </string-array>
     <string-array name="navigation_urls">
         <item>func:Main</item>
-        <item>http://www.notifica.re/apps-content/notificare/about</item>
         <item>func:Products</item>
         <item>func:Map</item>
         <item>func:Beacons</item>
@@ -34,7 +32,7 @@
     <string name="loader_generate_token">Generating new token...</string>
     <string name="title_sign_in">Sign in</string>
     <string name="title_sign_up">Sign up</string>
-    <string name="title_lost_pass">Lost password</string>
+    <string name="title_lost_pass">Forgotten password</string>
     <string name="title_reset_pass">Reset password</string>
     <string name="title_change_pass">Change password</string>
     <string name="title_generate_token">Generate token</string>
@@ -54,10 +52,11 @@
     <string name="hint_pass">password</string>
     <string name="hint_name">name</string>
     <string name="hint_confirm_pass">confirm password</string>
-    <string name="button_sign_in">Sign in</string>
-    <string name="button_sign_up">Sign up</string>
-    <string name="button_lost_pass">Recover password</string>
-    <string name="button_reset_pass">Reset password</string>
+    <string name="button_sign_in">sign in</string>
+    <string name="button_sign_up">create an account</string>
+    <string name="button_forgot_pass">forgotten password</string>
+    <string name="button_lost_pass">recover password</string>
+    <string name="button_reset_pass">reset password</string>
     <string name="error_sign_in">Invalid credentials</string>
     <string name="error_sign_up">Please fill in all fields</string>
     <string name="error_lost_pass">Please fill in a valid email</string>
