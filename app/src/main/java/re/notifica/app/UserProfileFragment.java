@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -57,6 +59,11 @@ public class UserProfileFragment extends Fragment {
         int i = getArguments().getInt(ARG_NAVIGATION_NUMBER);
         String label = getResources().getStringArray(R.array.navigation_labels)[i];
         //String url = getResources().getStringArray(R.array.navigation_urls)[i];
+
+        Typeface lightFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+        Typeface regularFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
+        Typeface hairlineFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Hairline.ttf");
+
         final ListView userProfileList =  (ListView) rootView.findViewById(R.id.userProfileList);
         final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.loader), true);
 
@@ -71,6 +78,21 @@ public class UserProfileFragment extends Fragment {
                         @Override
                         public void onSuccess(List<NotificareUserPreference> notificareUserPreferences) {
 
+                            if(result.getAccessToken() == null){
+                                Notificare.shared().generateAccessToken(new NotificareCallback<NotificareUser>() {
+                                    @Override
+                                    public void onSuccess(NotificareUser notificareUser) {
+
+                                    }
+
+                                    @Override
+                                    public void onError(NotificareError notificareError) {
+
+                                    }
+                                });
+                            }
+
+
                             final ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
                             final ArrayList<NotificareUserPreference> prefs = new ArrayList<NotificareUserPreference>();
 
@@ -81,7 +103,13 @@ public class UserProfileFragment extends Fragment {
                             HashMap<String, String> userProfile = new HashMap<String, String>();
                             userProfile.put("name", result.getUserName());
                             userProfile.put("email", result.getUserId());
-                            userProfile.put("token", result.getAccessToken() + "@pushmail.notifica.re");
+                            if(result.getAccessToken() == null){
+                                userProfile.put("token", "");
+
+                            } else {
+                                userProfile.put("token", result.getAccessToken() + "@pushmail.notifica.re");
+
+                            }
                             userProfile.put("icon", result.getUserId());
                             userProfile.put("label", "user_profile");
                             userProfile.put("action", result.getUserId());
@@ -94,6 +122,10 @@ public class UserProfileFragment extends Fragment {
                             HashMap<String, String> generateToken = new HashMap<String, String>();
                             generateToken.put("label", getString(R.string.title_generate_token));
                             list.add(generateToken);
+
+                            HashMap<String, String> signOut = new HashMap<String, String>();
+                            signOut.put("label", getString(R.string.title_signout));
+                            list.add(signOut);
 
                             HashMap<String, String> header2 = new HashMap<String, String>();
                             header2.put("label", getString(R.string.header_user_preferences));
@@ -142,18 +174,34 @@ public class UserProfileFragment extends Fragment {
                                         onGenerateToken();
                                     }
 
+                                    if(list.get(position).get("label").equals("user_profile") && !list.get(position).get("token").isEmpty()){
+                                        Intent intent = new Intent(Intent.ACTION_SEND);
+                                        intent.putExtra(Intent.EXTRA_EMAIL, list.get(position).get("token"));
+                                        intent.putExtra(Intent.EXTRA_SUBJECT, "Android Demo App");
+                                        intent.putExtra(Intent.EXTRA_TEXT, "Type some text");
+                                        intent.setData(Uri.parse("mailto:"));
+                                        intent.setType("text/plain");
+                                        startActivity(intent);
+                                    }
+
+
+                                    if(list.get(position).get("label").equals(getString(R.string.title_signout))){
+                                        onSignOut();
+                                    }
+
                                     if(list.get(position).get("preferenceId") != null){
 
-                                        NotificareUserPreference preference = prefs.get(position - 5);
+                                        NotificareUserPreference preference = prefs.get(position - 6);
 
                                         if(preference.getPreferenceType().equals("choice")){
-                                            showSingleChoiceOptions(prefs.get(position - 5));
+                                            showSingleChoiceOptions(prefs.get(position - 6));
                                         } else {
-                                            showMultiChoiceOptions(prefs.get(position - 5));
+                                            showMultiChoiceOptions(prefs.get(position - 6));
                                         }
 
 
                                     }
+
 
 
                                 }
@@ -195,7 +243,7 @@ public class UserProfileFragment extends Fragment {
         layout.setOrientation(LinearLayout.VERTICAL);
 
         alert.setTitle(getString(R.string.app_name));
-        alert.setMessage(getString(R.string.title_change_pass));
+        alert.setMessage(getString(R.string.text_change_pass));
 
         final EditText pass1 = new EditText(this.getActivity());
         final EditText pass2 = new EditText(this.getActivity());
@@ -446,5 +494,28 @@ public class UserProfileFragment extends Fragment {
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    }
+
+    public void onSignOut(){
+        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "", getString(R.string.signout), true);
+        Notificare.shared().userLogout(new NotificareCallback<Boolean>() {
+
+            @Override
+            public void onSuccess(Boolean result) {
+
+                SignInFragment fragment = new SignInFragment();
+                Bundle args = new Bundle();
+                args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, 4);
+                fragment.setArguments(args);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onError(NotificareError error) {
+                dialog.dismiss();
+            }
+        });
     }
 }

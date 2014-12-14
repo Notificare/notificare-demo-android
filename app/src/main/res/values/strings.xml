@@ -7,8 +7,7 @@
         <item>Notificare</item>
         <item>Products</item>
         <item>Locations</item>
-        <item>Beacons</item>
-        <item>My Profile</item>
+        <item>User Profile</item>
         <item>Inbox</item>
         <item>Settings</item>
     </string-array>
@@ -16,7 +15,6 @@
         <item>func:Main</item>
         <item>func:Products</item>
         <item>func:Map</item>
-        <item>func:Beacons</item>
         <item>func:Login</item>
         <item>func:Inbox</item>
         <item>func:Settings</item>
@@ -29,17 +27,19 @@
     <string name="loader_signin">Authenticating...</string>
     <string name="loader_connection">Contacting server...</string>
     <string name="loader">Loading...</string>
+    <string name="signout">Logging out...</string>
     <string name="loader_generate_token">Generating new token...</string>
     <string name="title_sign_in">Sign in</string>
     <string name="title_sign_up">Sign up</string>
     <string name="title_lost_pass">Forgotten password</string>
     <string name="title_reset_pass">Reset password</string>
-    <string name="title_change_pass">Change password</string>
-    <string name="title_generate_token">Generate token</string>
+    <string name="title_change_pass">change password</string>
+    <string name="text_change_pass">Type a new password</string>
+    <string name="title_generate_token">generate new email token</string>
     <string name="title_validate">Validate</string>
     <string name="title_settings">Settings</string>
     <string name="title_ibeacons">BT LE Beacons</string>
-    <string name="title_signout">Signout</string>
+    <string name="title_signout">signout</string>
     <string name="title_inbox">Inbox</string>
     <string name="title_products">Products</string>
     <string name="title_delete">Delete</string>

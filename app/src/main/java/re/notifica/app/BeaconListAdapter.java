@@ -33,9 +33,16 @@ public class BeaconListAdapter extends ArrayAdapter<NotificareBeacon> {
         if (rowView == null) {
             rowView = inflater.inflate(resource, null, true);
         }
+
+        Typeface hairlineTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/Lato-Hairline.ttf");
+        Typeface myTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/Lato-Regular.ttf");
+        Typeface lightTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/Lato-Light.ttf");
+
+
         TextView nameView = (TextView)rowView.findViewById(R.id.name);
-        nameView.setTypeface(null, Typeface.BOLD);
+        nameView.setTypeface(myTypeface);
         TextView messageView = (TextView)rowView.findViewById(R.id.message);
+        messageView.setTypeface(lightTypeface);
         ImageView iconView = (ImageView)rowView.findViewById(R.id.icon);
         NotificareBeacon beacon = getItem(position);
         nameView.setText(beacon.getName());

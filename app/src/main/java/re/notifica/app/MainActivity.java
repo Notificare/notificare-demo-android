@@ -66,6 +66,7 @@ import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -83,7 +84,10 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
     private String[] navigationLabels;
     private ProgressDialog dialog;
     public Typeface myTypeface;
+    public Typeface lightTypeface;
+    public Typeface hairlineTypeface;
     protected ArrayAdapter<NotificareProduct> productListAdapter;
+    public List<Circle> circlesList;
     private Menu mOptionsMenu;
     protected static final String TAG = MainActivity.class.getSimpleName();
 
@@ -92,10 +96,12 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        circlesList = new ArrayList<Circle>();
         productListAdapter = new ProductListAdapter(this, R.layout.product_list_cell);
 
-
-        myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lato-Hairline.ttf");
+        hairlineTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lato-Hairline.ttf");
+        myTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+        lightTypeface = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
 
         mTitle = mDrawerTitle = getTitle();
         navigationLabels = getResources().getStringArray(R.array.navigation_labels);
@@ -167,11 +173,9 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         mOptionsMenu = menu;
-        if(Notificare.shared().isLoggedIn()) {
-            inflater.inflate(R.menu.user, menu);
-        }else{
-            inflater.inflate(R.menu.main, menu);
-        }
+
+        inflater.inflate(R.menu.main, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -180,11 +184,8 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        if(Notificare.shared().isLoggedIn()) {
-            menu.findItem(R.id.action_signout).setVisible(!drawerOpen);
-        }else {
-            menu.findItem(R.id.action_ibeacons).setVisible(false);
-        }
+
+        menu.findItem(R.id.action_ibeacons).setVisible(!drawerOpen);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -209,7 +210,7 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
 
                     SignInFragment fragment = new SignInFragment();
                     Bundle args = new Bundle();
-                    args.putInt(WebViewFragment.ARG_NAVIGATION_NUMBER, 4);
+                    args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, 4);
                     fragment.setArguments(args);
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -248,6 +249,8 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
 
             @Override
             public void run() {
+
+                Log.d(TAG, "RANGING BEACONS");
 
                 if (notificareBeacons.size() > 0) {
                     Log.d(TAG, "HEY THERE");
@@ -321,28 +324,40 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
 				fragmentTransaction.commit();
 				getFragmentManager().executePendingTransactions();
 
-
 				map = mMapFragment.getMap();
 				map.setMyLocationEnabled(true);
-				map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+                map.animateCamera( CameraUpdateFactory.zoomTo( map.getMaxZoomLevel() - 6.0f ) );
+                map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
                     @Override
                     public void onMapLoaded() {
-                        for (NotificareRegion region : Notificare.shared().getRegions()) {
-
-                            map.addCircle(new CircleOptions()
-                                .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
-                                .radius(region.getDistance())
-                                .fillColor(R.color.wildsand)
-                                .strokeColor(0)
-                                .strokeWidth(0));
-                        }
-
 
                     }
                 });
+
+
 				map.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
+
                     @Override
                     public void onMyLocationChange(Location location) {
+
+                        for (Circle region : circlesList) {
+                            region.remove();
+                        }
+
+                        circlesList = new ArrayList<Circle>();
+
+                        for (NotificareRegion region : Notificare.shared().getRegions()) {
+                            Circle circle;
+                            circle = map.addCircle(new CircleOptions()
+                                    .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
+                                    .radius(region.getDistance())
+                                    .fillColor(R.color.wildsand)
+                                    .strokeColor(0)
+                                    .strokeWidth(0));
+
+                            circlesList.add(circle);
+                        }
+
 
                         float zoom = map.getCameraPosition().zoom;
 

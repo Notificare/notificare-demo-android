@@ -56,8 +56,11 @@ public class UserProfileAdapter extends BaseAdapter {
     private static final int TYPE_SINGLE = 3;
     private static final int TYPE_CHOICE = 4;
     private static final int TYPE_SELECT = 5;
-    private static final int SEGMENTS_START = 5;
+    private static final int SEGMENTS_START = 6;
 
+    private Typeface lightFont;
+    private Typeface regularFont;
+    private Typeface hairlineFont;
 
     public UserProfileAdapter(Activity activity, ArrayList<HashMap<String, String>> userProfileList, ArrayList<NotificareUserPreference> prefs) {
         this.activity = activity;
@@ -73,10 +76,14 @@ public class UserProfileAdapter extends BaseAdapter {
         }
 
         headers.add(0);
-        headers.add(4);
+        headers.add(5);
         userCells.add(1);
 
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        lightFont = Typeface.createFromAsset(activity.getAssets(), "fonts/Lato-Light.ttf");
+        regularFont = Typeface.createFromAsset(activity.getAssets(), "fonts/Lato-Regular.ttf");
+        hairlineFont = Typeface.createFromAsset(activity.getAssets(), "fonts/Lato-Hairline.ttf");
     }
 
 
@@ -154,7 +161,9 @@ public class UserProfileAdapter extends BaseAdapter {
                     holder.name.setText(itemHash.get("name"));
                     holder.email.setText(itemHash.get("email"));
                     holder.token.setText(itemHash.get("token"));
-                    holder.name.setTypeface(null, Typeface.BOLD);
+                    holder.name.setTypeface(regularFont);
+                    holder.email.setTypeface(lightFont);
+                    holder.token.setTypeface(lightFont);
 
                     String url = "/" + md5(itemHash.get("email").trim().toLowerCase()) + "?s=160";
 
@@ -178,13 +187,13 @@ public class UserProfileAdapter extends BaseAdapter {
                     convertView = inflater.inflate(R.layout.row_header, null);
                     holder.name = (TextView) convertView.findViewById(R.id.item_label);
                     holder.name.setText(itemHash.get("label"));
-
+                    holder.name.setTypeface(regularFont);
                     break;
                 case TYPE_SIMPLE:
                     convertView = inflater.inflate(R.layout.row_user_profile_simple, null);
                     holder.name = (TextView) convertView.findViewById(R.id.item_label);
                     holder.name.setText(itemHash.get("label"));
-                    holder.name.setTypeface(null, Typeface.BOLD);
+                    holder.name.setTypeface(lightFont);
                     break;
 
                 case TYPE_SINGLE:
@@ -205,7 +214,7 @@ public class UserProfileAdapter extends BaseAdapter {
 
                             if(((Switch) v).isChecked()) {
 
-                                Notificare.shared().userSegmentAddToUserPreference(segment.getUserSegmentId(), prefs.get(position - 5), new NotificareCallback<Boolean>() {
+                                Notificare.shared().userSegmentAddToUserPreference(segment.getUserSegmentId(), prefs.get(position - SEGMENTS_START), new NotificareCallback<Boolean>() {
                                     @Override
                                     public void onSuccess(Boolean aBoolean) {
 
@@ -220,7 +229,7 @@ public class UserProfileAdapter extends BaseAdapter {
 
                             } else {
 
-                                Notificare.shared().userSegmentRemoveFromUserPreference(segment.getUserSegmentId(), prefs.get(position - 5), new NotificareCallback<Boolean>() {
+                                Notificare.shared().userSegmentRemoveFromUserPreference(segment.getUserSegmentId(), prefs.get(position - SEGMENTS_START), new NotificareCallback<Boolean>() {
                                     @Override
                                     public void onSuccess(Boolean aBoolean) {
 
@@ -236,7 +245,7 @@ public class UserProfileAdapter extends BaseAdapter {
 
                         }
                     });
-                    holder.name.setTypeface(null, Typeface.BOLD);
+                    holder.name.setTypeface(regularFont);
                     break;
 
                 case TYPE_CHOICE:
@@ -245,14 +254,15 @@ public class UserProfileAdapter extends BaseAdapter {
                     holder.name = (TextView) convertView.findViewById(R.id.item_name);
                     holder.label.setText(itemHash.get("label"));
                     holder.name.setText(itemHash.get("name"));
-                    holder.label.setTypeface(null, Typeface.BOLD);
+                    holder.label.setTypeface(regularFont);
+                    holder.name.setTypeface(lightFont);
                     break;
 
                 case TYPE_SELECT:
                     convertView = inflater.inflate(R.layout.row_segment_select, null);
                     holder.name = (TextView) convertView.findViewById(R.id.item_label);
                     holder.name.setText(itemHash.get("label"));
-                    holder.name.setTypeface(null, Typeface.BOLD);
+                    holder.name.setTypeface(regularFont);
                     break;
             }
             convertView.setTag(holder);

@@ -64,6 +64,7 @@ public class LostPassActivity extends Activity {
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             //do things
+                            emailField.setText("");
                         }
                     });
             AlertDialog dialogInfo = builder.create();
@@ -83,7 +84,7 @@ public class LostPassActivity extends Activity {
                             .setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    //do things
+                                    emailField.setText("");
                                 }
                             });
                     AlertDialog dialogInfo = builder.create();
@@ -100,6 +101,7 @@ public class LostPassActivity extends Activity {
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     //do things
+                                    finish();
                                 }
                             });
                     AlertDialog dialogInfo = builder.create();

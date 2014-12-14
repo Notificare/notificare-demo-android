@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="100dp"
+    android:layout_height="@dimen/inbox_cell_height"
     android:padding="10dip"
     android:background="@drawable/cell_border_bottom">
 
@@ -17,16 +17,16 @@
     <TextView
         android:id="@+id/inbox_date"
         android:layout_width="fill_parent"
-        android:layout_height="15dip"
+        android:layout_height="20dip"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:textSize="12sp" />
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/inbox_message"
         android:layout_width="fill_parent"
-        android:layout_height="30dip"
+        android:layout_height="60dip"
         android:layout_below="@id/inbox_date"
-        android:textSize="14sp" />
+        android:textSize="13sp" />
 
 </RelativeLayout> 

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="60dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="@dimen/user_simple_cell_height"
     android:padding="2dip" android:background="@drawable/cell_border_top">
 
     <TextView
         android:id="@+id/item_label"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:padding="8dp"
-        android:text="asdfasfd" />
+        android:layout_height="40dp"
+        android:paddingTop="12dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"
+        android:text="" />
 
 </RelativeLayout>

@@ -1,7 +1,9 @@
 <resources>
     <string name="pref_tags_title">Notification categories</string>
-    <string name="pref_summary_tag_news">Receive the latest news</string>
-    <string name="pref_title_tag_news">News</string>
-    <string name="pref_summary_tag_updates">Receive information on updates</string>
-    <string name="pref_title_tag_updates">Updates</string>
+    <string name="pref_summary_tag_press">Receive the latests press releases</string>
+    <string name="pref_title_tag_press">Press</string>
+    <string name="pref_summary_tag_events">Receive all the news about events</string>
+    <string name="pref_title_tag_events">Events</string>
+    <string name="pref_summary_tag_newsletter">Receive the periodical newsletter</string>
+    <string name="pref_title_tag_newsletter">Newsletter</string>
 </resources>

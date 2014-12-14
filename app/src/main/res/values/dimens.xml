@@ -3,5 +3,14 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
+    <dimen name="activity_elements_default_margin">20dp</dimen>
+    <dimen name="activity_elements_top_margin">60dp</dimen>
+    <dimen name="activity_buttons_height">60dp</dimen>
+    <dimen name="beacon_cell_height">100dp</dimen>
+    <dimen name="inbox_cell_height">100dp</dimen>
+    <dimen name="product_cell_height">100dp</dimen>
+    <dimen name="user_cell_height">75dp</dimen>
+    <dimen name="user_simple_cell_height">75dp</dimen>
+    <dimen name="user_segments_cell_height">60dp</dimen>
+    <dimen name="user_header_height">65dp</dimen>
 </resources>

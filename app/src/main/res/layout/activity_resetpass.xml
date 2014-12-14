@@ -14,21 +14,16 @@
 	        android:orientation="vertical" 
 	        android:layout_width="fill_parent" 
 	        android:layout_height="wrap_content"
-	        android:background="@android:color/white" >
-
-			<TextView android:id="@+id/infoText"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_margin="10dp"
-              android:layout_marginTop="20dp"
-              android:layout_marginBottom="20dp"
-              android:text="" />
+	        android:background="@color/wildsand" >
 
 			<EditText 
 				android:id="@+id/pass"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:layout_margin="10dp"
+                android:layout_marginTop="@dimen/activity_elements_top_margin"
+                android:layout_marginLeft="@dimen/activity_elements_default_margin"
+                android:layout_marginRight="@dimen/activity_elements_default_margin"
+                android:layout_marginBottom="@dimen/activity_elements_default_margin"
 				android:inputType="textPassword"
 				android:hint="@string/hint_pass" >
 			</EditText>
@@ -37,7 +32,9 @@
 				android:id="@+id/confirmPass"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:layout_margin="10dp"
+                android:layout_marginLeft="@dimen/activity_elements_default_margin"
+                android:layout_marginRight="@dimen/activity_elements_default_margin"
+                android:layout_marginBottom="@dimen/activity_elements_default_margin"
 				android:inputType="textPassword"
 				android:hint="@string/hint_confirm_pass" >
 			</EditText>
@@ -45,10 +42,13 @@
 			<Button
 				android:id="@+id/buttonResetPass"
 				android:layout_width="fill_parent"
-				android:layout_height="48dp"
-				android:textColor="#FFFFFF"
-				android:background="#3d3b37"
-				android:layout_margin="10dp"
+                android:layout_height="60dp"
+                android:textColor="#FFFFFF"
+                android:background="@color/mantis"
+                android:layout_marginTop="@dimen/activity_elements_default_margin"
+                android:layout_marginLeft="@dimen/activity_elements_default_margin"
+                android:layout_marginRight="@dimen/activity_elements_default_margin"
+                android:layout_marginBottom="@dimen/activity_elements_default_margin"
 				android:text="@string/button_reset_pass"
 				android:textSize="20dp"
 				 />

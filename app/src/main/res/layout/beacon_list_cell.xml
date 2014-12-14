@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="100dp"
+    android:layout_height="@dimen/beacon_cell_height"
     android:padding="10dip"
     android:background="@drawable/cell_border_bottom">
 
@@ -9,10 +9,11 @@
         android:id="@+id/icon"
         android:layout_width="32dip"
         android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentBottom="false"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dip"
         android:layout_marginLeft="6dip"
         android:layout_marginStart="6dip"
         android:contentDescription="@string/content_description_beacon_icon"
@@ -21,15 +22,15 @@
     <TextView
         android:id="@+id/message"
         android:layout_width="fill_parent"
-        android:layout_height="35dip"
+        android:layout_height="65dip"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@id/icon"
         android:layout_toStartOf="@id/icon"
         android:inputType="textMultiLine"
-        android:paddingTop="5dp"
-        android:textSize="12sp" />
+        android:layout_marginTop="35dp"
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/name"
@@ -41,6 +42,6 @@
         android:layout_alignWithParentIfMissing="true"
         android:layout_toLeftOf="@id/icon"
         android:layout_toStartOf="@id/icon"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
 </RelativeLayout> 

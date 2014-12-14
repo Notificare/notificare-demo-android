@@ -84,7 +84,7 @@ public class SignUpActivity extends Activity {
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            //do things
+                            confirmPasswordField.setText("");
                         }
                     });
             AlertDialog dialogInfo = builder.create();
@@ -96,7 +96,8 @@ public class SignUpActivity extends Activity {
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            //do things
+                            passwordField.setText("");
+                            confirmPasswordField.setText("");
                         }
                     });
             AlertDialog dialogInfo = builder.create();
@@ -109,6 +110,7 @@ public class SignUpActivity extends Activity {
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             //do things
+                            emailField.setText("");
                         }
                     });
             AlertDialog dialogInfo = builder.create();
@@ -128,6 +130,7 @@ public class SignUpActivity extends Activity {
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     //do things
+                                    emailField.setText("");
                                 }
                             });
                     AlertDialog dialogInfo = builder.create();
@@ -143,7 +146,7 @@ public class SignUpActivity extends Activity {
                             .setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    //do things
+                                    finish();
                                 }
                             });
                     AlertDialog dialogInfo = builder.create();

@@ -5,6 +5,7 @@ import re.notifica.model.NotificareInboxItem;
 import re.notifica.push.gcm.BaseActivity;
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -33,11 +34,18 @@ public class InboxActivity extends BaseActivity {
     private ActionMode mActionMode;
     protected static final String TAG = InboxActivity.class.getSimpleName();
 
+    private Typeface lightFont;
+    private Typeface regularFont;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
         listView = (ListView)findViewById(R.id.inboxList);
+
+        Typeface lightFont = Typeface.createFromAsset(this.getAssets(), "fonts/Lato-Light.ttf");
+        Typeface regularFont = Typeface.createFromAsset(this.getAssets(), "fonts/Lato-Regular.ttf");
+
         itemsToRemove = new ArrayList<Integer>();
         inboxListAdapter = new InboxListAdapter(this, R.layout.inbox_list_cell);
         listView.setAdapter(inboxListAdapter);
@@ -121,6 +129,8 @@ public class InboxActivity extends BaseActivity {
             }
             TextView dateView = (TextView)rowView.findViewById(R.id.inbox_date);
             TextView messageView = (TextView)rowView.findViewById(R.id.inbox_message);
+            dateView.setTypeface(regularFont);
+            messageView.setTypeface(lightFont);
             NotificareInboxItem item = getItem(position);
 
             dateView.setText(DateUtils.getRelativeTimeSpanString(item.getNotification().getTime().getTime(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
