@@ -90,11 +90,15 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
     public List<Circle> circlesList;
     private Menu mOptionsMenu;
     protected static final String TAG = MainActivity.class.getSimpleName();
+    private AlertDialog.Builder builder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        builder = new AlertDialog.Builder(this);
 
         circlesList = new ArrayList<Circle>();
         productListAdapter = new ProductListAdapter(this, R.layout.product_list_cell);
@@ -409,7 +413,16 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
                 mDrawerList.setItemChecked(position, true);
                 setTitle(navigationLabels[position]);
 
-                //startActivity(new Intent(MainActivity.this, ProductsActivity.class));
+//                builder.setMessage(R.string.alert_inapp_purchase_demo)
+//                        .setTitle(R.string.app_name)
+//                        .setCancelable(false)
+//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//
+//                            }
+//                        });
+//                AlertDialog dialogInfo = builder.create();
+//                dialogInfo.show();
 
             } else if (second.equals("Main")) {
 
