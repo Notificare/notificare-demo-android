@@ -413,16 +413,16 @@ public class MainActivity extends BaseActivity implements BeaconRangingListener,
                 mDrawerList.setItemChecked(position, true);
                 setTitle(navigationLabels[position]);
 
-//                builder.setMessage(R.string.alert_inapp_purchase_demo)
-//                        .setTitle(R.string.app_name)
-//                        .setCancelable(false)
-//                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//
-//                            }
-//                        });
-//                AlertDialog dialogInfo = builder.create();
-//                dialogInfo.show();
+                builder.setMessage(R.string.alert_inapp_purchase_demo)
+                        .setTitle(R.string.app_name)
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                            }
+                        });
+                AlertDialog dialogInfo = builder.create();
+                dialogInfo.show();
 
             } else if (second.equals("Main")) {
 
