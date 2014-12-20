@@ -38,7 +38,11 @@ public class AppReceiver extends DefaultIntentReceiver {
     @Override
     public void onReady() {
         Notificare.shared().enableNotifications();
-        Notificare.shared().enableLocationUpdates();
+
+        if(Notificare.shared().isLocationUpdatesEnabled()){
+            Notificare.shared().enableLocationUpdates();
+        }
+
         Notificare.shared().enableBeacons();
         Notificare.shared().enableBilling();
     }
