@@ -22,8 +22,7 @@ android {
 repositories {
     mavenCentral()
     maven {
-        //url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
-        url "file:///Users/joris/git/notificare-mvn-repo/releases"
+        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
     }
     flatDir {
         dirs 'libs'
@@ -36,6 +35,6 @@ dependencies {
     compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.0', ext: 'aar', transitive: true
 }
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+//configurations.all {
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
