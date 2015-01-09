@@ -133,7 +133,7 @@ public class InboxActivity extends BaseActivity {
             messageView.setTypeface(lightFont);
             NotificareInboxItem item = getItem(position);
 
-            dateView.setText(DateUtils.getRelativeTimeSpanString(item.getNotification().getTime().getTime(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
+            dateView.setText(DateUtils.getRelativeTimeSpanString(item.getTimestamp().getTime(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS));
             messageView.setText(item.getNotification().getMessage());
             dateView.setTextColor(Color.BLACK);
             messageView.setTextColor(Color.BLACK);
