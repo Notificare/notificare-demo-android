@@ -1,6 +1,5 @@
 package re.notifica.app;
 import re.notifica.Notificare;
-import re.notifica.model.NotificareBeacon;
 
 import android.app.Application;
 
@@ -15,6 +14,7 @@ public class AppBaseApplication extends Application {
         //Notificare.shared().setDebugLogging(BuildConfig.DEBUG);
 	    Notificare.shared().setIntentReceiver(AppReceiver.class);
 	    Notificare.shared().setUserPreferencesResource(R.xml.preferences);
+        Notificare.shared().setSmallIcon(R.drawable.ic_stat_notify_msg);
 
 	}
 
