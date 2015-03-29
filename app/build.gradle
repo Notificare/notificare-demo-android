@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.0"
 
     defaultConfig {
         applicationId "re.notifica.app"
-        minSdkVersion 16
-        targetSdkVersion 21
+        minSdkVersion 14
+        targetSdkVersion 22
         versionCode 10001
         versionName "1.0.1"
     }
@@ -32,8 +32,8 @@ repositories {
 
 dependencies {
     compile 'com.loopj.android:android-async-http:1.4.5'
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.4.0', ext:'aar', transitive: true
-    compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.1', ext: 'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.4.1', ext:'aar', transitive: true
+    compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.1.4', ext: 'aar', transitive: true
 }
 
 configurations.all {
