@@ -1,7 +1,6 @@
 package re.notifica.app;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import re.notifica.model.NotificareBeacon;
-import re.notifica.model.NotificareProduct;
 
 public class BeaconListAdapter extends ArrayAdapter<NotificareBeacon> {
 

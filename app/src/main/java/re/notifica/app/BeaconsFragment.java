@@ -1,15 +1,10 @@
 package re.notifica.app;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,7 +13,6 @@ import java.util.List;
 import re.notifica.Notificare;
 import re.notifica.beacon.BeaconRangingListener;
 import re.notifica.model.NotificareBeacon;
-import re.notifica.model.NotificareProduct;
 
 
 public class BeaconsFragment extends Fragment implements BeaconRangingListener {

@@ -11,6 +11,7 @@ import re.notifica.NotificareError;
 import re.notifica.model.NotificareNotification;
 import re.notifica.push.gcm.DefaultIntentReceiver;
 
+
 public class AppReceiver extends DefaultIntentReceiver {
 
 	public static final String PREFS_NAME = "AppPrefsFile";
@@ -20,7 +21,7 @@ public class AppReceiver extends DefaultIntentReceiver {
 	public void onNotificationReceived(String alert, String notificationId,
 			Bundle extras) {
 		// Execute default behavior, i.e., put notification in drawer
-		Log.d(TAG, "Notification received with extra " + extras.getString("mykey"));
+		Log.d(TAG, " received with extra Notification" + extras.getString("mykey"));
 		super.onNotificationReceived(alert, notificationId, extras);
 	}
 
@@ -37,7 +38,14 @@ public class AppReceiver extends DefaultIntentReceiver {
 
     @Override
     public void onReady() {
-        Notificare.shared().enableNotifications();
+
+        try {
+            if (!Notificare.shared().isNotificationsEnabled()) {
+                Notificare.shared().enableNotifications();
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error on notification enabled");
+        }
 
         //if(Notificare.shared().isLocationUpdatesEnabled()){
             Notificare.shared().enableLocationUpdates();

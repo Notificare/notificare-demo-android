@@ -1,30 +1,16 @@
 package re.notifica.app;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.ProgressDialog;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import re.notifica.Notificare;
-import re.notifica.NotificareCallback;
-import re.notifica.NotificareError;
-import re.notifica.billing.BillingManager;
-import re.notifica.billing.BillingResult;
-import re.notifica.billing.Purchase;
 import re.notifica.model.NotificareProduct;
-import re.notifica.model.NotificareUser;
 
 
 /**

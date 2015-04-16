@@ -4,17 +4,17 @@
         android:title="@string/pref_tags_title"
         android:key="pref_key_tags">
         <CheckBoxPreference
-            android:key="tag_press"
+            android:key="pref_key_press"
             android:summary="@string/pref_summary_tag_press"
             android:title="@string/pref_title_tag_press"
             android:defaultValue="false" />
         <CheckBoxPreference 
-            android:key="tag_events"
+            android:key="pref_key_events"
             android:summary="@string/pref_summary_tag_events"
             android:title="@string/pref_title_tag_events"
             android:defaultValue="false" />
         <CheckBoxPreference
-            android:key="tag_newsletter"
+            android:key="pref_key_newsletter"
             android:summary="@string/pref_summary_tag_newsletter"
             android:title="@string/pref_title_tag_newsletter"
             android:defaultValue="false" />
