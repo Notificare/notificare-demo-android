@@ -39,13 +39,7 @@ public class AppReceiver extends DefaultIntentReceiver {
     @Override
     public void onReady() {
 
-        try {
-            if (!Notificare.shared().isNotificationsEnabled()) {
-                Notificare.shared().enableNotifications();
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "Error on notification enabled");
-        }
+        Notificare.shared().enableNotifications();
 
         //if(Notificare.shared().isLocationUpdatesEnabled()){
             Notificare.shared().enableLocationUpdates();
