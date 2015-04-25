@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+if [[ ( "$1" == '-l' && -f "$2" && -n "$3" ) ]]; then
+    keytool -keystore $2 -storepass $3 -list | awk '/PrivateKeyEntry/ {print}'
+    exit
+fi
+
+if [[ ! ( # any of the following are not true
+        # 1st arg is an existing regular file
+        -f "$1" &&
+        # 2nd argument is non-empty
+        -n "$2" &&
+        # 3rd argument is non-empty
+        -n "$3" &&
+        # 4th argument is an existing regular file
+        # ...and it has a .apk extension
+        "${4##*.}" == "apk"
+        ) ]];
+    then
+        cat << EOF >&2
+    Usage: $(basename "$0") KEYSTORE STOREPASS ALIAS Application.apk
+    Usage: $(basename "$0") -l KEYSTORE STOREPASS
+
+    Options:
+      -l    List aliases and exit
+EOF
+    exit;
+fi
+
+## Exit on use of an uninitialized variable
+set -o nounset
+## Exit if any statement returns a non-true return value (non-zero)
+set -o errexit
+## Announce commands
+#set -o xtrace
+
+realpath(){
+    echo "$(cd "$(dirname "$1")"; echo -n "$(pwd)/$(basename "$1")")";
+}
+
+APK="$(realpath $4)"
+KEYSTORE="$(realpath $1)"
+ALIAS="$3"
+STOREPASS="$2"
+APK_NEW="$(pwd)/$(basename "$APK" .apk).resigned.apk"
+jarsigner -sigalg SHA1withRSA -digestalg SHA1 -sigfile CERT -keystore $KEYSTORE -storepass $STOREPASS $APK $ALIAS
+/Users/joris/android-sdks/build-tools/22.0.1/zipalign -f 4 $APK $APK_NEW
