@@ -1,6 +1,7 @@
 package re.notifica.app;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -11,7 +12,7 @@ import re.notifica.beacon.BeaconRangingListener;
 import re.notifica.model.NotificareBeacon;
 import re.notifica.push.gcm.BaseActivity;
 
-public class BeaconsActivity extends BaseActivity implements BeaconRangingListener {
+public class BeaconsActivity extends ActionBarActivity implements BeaconRangingListener {
 
     private ListView listView;
     private BeaconListAdapter beaconListAdapter;

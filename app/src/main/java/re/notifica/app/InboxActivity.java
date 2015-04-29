@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.format.DateUtils;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -24,7 +25,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class InboxActivity extends BaseActivity {
+public class InboxActivity extends ActionBarActivity {
 
     private ListView listView;
     private ArrayList<Integer> itemsToRemove;

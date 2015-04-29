@@ -15,6 +15,7 @@ import re.notifica.model.NotificareBeacon;
 import re.notifica.model.NotificareProduct;
 import re.notifica.model.NotificareRegion;
 import re.notifica.model.NotificareUser;
+import re.notifica.support.v7.app.ActionBarBaseActivity;
 import re.notifica.ui.UserPreferencesActivity;
 
 import android.app.AlertDialog;
@@ -53,7 +54,7 @@ import com.google.android.gms.maps.model.LatLng;
 import android.support.v7.app.ActionBarActivity;
 
 
-public class MainActivity extends ActionBarActivity implements BeaconRangingListener,Notificare.OnBillingReadyListener, BillingManager.OnRefreshFinishedListener, BillingManager.OnPurchaseFinishedListener {
+public class MainActivity extends ActionBarBaseActivity implements BeaconRangingListener,Notificare.OnBillingReadyListener, BillingManager.OnRefreshFinishedListener, BillingManager.OnPurchaseFinishedListener {
 
     public GoogleMap map;
     private DrawerLayout mDrawerLayout;
@@ -235,7 +236,7 @@ public class MainActivity extends ActionBarActivity implements BeaconRangingList
             @Override
             public void run() {
 
-                Log.d(TAG, "RANGING BEACONS");
+                Log.i(TAG, "RANGING BEACONS");
 
                 if (notificareBeacons.size() > 0) {
                     Log.d(TAG, "HEY THERE");

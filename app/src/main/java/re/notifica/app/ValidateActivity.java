@@ -6,10 +6,11 @@ import re.notifica.NotificareError;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ValidateActivity extends Activity {
+public class ValidateActivity extends ActionBarActivity {
 
     private String token;
     private TextView info;

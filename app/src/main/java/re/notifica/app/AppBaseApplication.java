@@ -11,7 +11,7 @@ public class AppBaseApplication extends Application {
 		super.onCreate();
 
 	    Notificare.shared().launch(this);
-        //Notificare.shared().setDebugLogging(BuildConfig.DEBUG);
+        Notificare.shared().setDebugLogging(BuildConfig.DEBUG);
 	    Notificare.shared().setIntentReceiver(AppReceiver.class);
 	    Notificare.shared().setUserPreferencesResource(R.xml.preferences);
         Notificare.shared().setSmallIcon(R.drawable.ic_stat_notify_msg);
