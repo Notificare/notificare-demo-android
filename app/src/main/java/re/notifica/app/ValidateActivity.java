@@ -7,10 +7,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ValidateActivity extends ActionBarActivity {
+public class ValidateActivity extends AppCompatActivity {
 
     private String token;
     private TextView info;

@@ -3,11 +3,14 @@ package re.notifica.app;
 import re.notifica.Notificare;
 import re.notifica.model.NotificareInboxItem;
 import re.notifica.push.gcm.BaseActivity;
+import re.notifica.support.v7.app.ActionBarBaseActivity;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateUtils;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -25,7 +28,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class InboxActivity extends ActionBarActivity {
+public class InboxActivity extends ActionBarBaseActivity {
 
     private ListView listView;
     private ArrayList<Integer> itemsToRemove;

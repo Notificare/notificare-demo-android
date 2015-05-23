@@ -37,7 +37,7 @@ public class BeaconsFragment extends Fragment implements BeaconRangingListener {
         final ListView listView =  (ListView) rootView.findViewById(R.id.beaconsList);
 
         if (Notificare.shared().getBeaconClient() != null) {
-            Log.i(TAG, "addRangingListener");
+
             Notificare.shared().getBeaconClient().addRangingListener(this);
         }
 
@@ -70,7 +70,9 @@ public class BeaconsFragment extends Fragment implements BeaconRangingListener {
             @Override
             public void run() {
                 beaconListAdapter.clear();
+
                 for (NotificareBeacon beacon : notificareBeacons) {
+                    Log.i(TAG, beacon.getName());
                     beaconListAdapter.add(beacon);
                 }
             }
