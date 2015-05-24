@@ -148,41 +148,15 @@ public class SignInFragment extends Fragment {
 
                                 @Override
                                 public void onSuccess(NotificareUser user) {
-                                    Notificare.shared().setUserId(user.getUserId());
-                                    Notificare.shared().registerDevice(Notificare.shared().getDeviceId(), user.getUserId(), user.getUserName(), new NotificareCallback<String>() {
-
-                                        @Override
-                                        public void onSuccess(String result) {
-
-                                            Fragment fragment = new UserProfileFragment();
-                                            Bundle args = new Bundle();
-                                            args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, i);
-                                            fragment.setArguments(args);
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-                                            emailField.setText(null);
-                                            passwordField.setText(null);
-                                            dialog.dismiss();
-                                        }
-
-                                        @Override
-                                        public void onError(NotificareError error) {
-                                            dialog.dismiss();
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                            builder.setMessage(R.string.error_sign_in)
-                                                    .setTitle(R.string.app_name)
-                                                    .setCancelable(false)
-                                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int id) {
-                                                            //do things
-                                                        }
-                                                    });
-                                            AlertDialog dialogInfo = builder.create();
-                                            dialogInfo.show();
-                                            passwordField.setText(null);
-                                        }
-
-                                    });
+                                    Fragment fragment = new UserProfileFragment();
+                                    Bundle args = new Bundle();
+                                    args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, i);
+                                    fragment.setArguments(args);
+                                    FragmentManager fragmentManager = getFragmentManager();
+                                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                                    emailField.setText(null);
+                                    passwordField.setText(null);
+                                    dialog.dismiss();
                                 }
 
                             });
