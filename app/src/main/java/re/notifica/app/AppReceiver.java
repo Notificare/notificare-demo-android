@@ -53,12 +53,12 @@ public class AppReceiver extends DefaultIntentReceiver {
 	public void onRegistrationFinished(String deviceId) {
 		Log.d(TAG, "Device was registered with GCM as device " + deviceId);
 		// Register as a device for a test userID
-		
+
 		Notificare.shared().registerDevice(deviceId, new NotificareCallback<String>() {
 
 			@Override
 			public void onSuccess(String result) {
-				
+
 				Notificare.shared().fetchDeviceTags(new NotificareCallback<List<String>>() {
 
 					@Override
@@ -70,9 +70,9 @@ public class AppReceiver extends DefaultIntentReceiver {
 					@Override
 					public void onSuccess(List<String> arg0) {
 
-						 
+
 					}
-					
+
 				});
 			}
 

@@ -15,6 +15,7 @@ public class AppBaseApplication extends Application {
 	    Notificare.shared().setIntentReceiver(AppReceiver.class);
 	    Notificare.shared().setUserPreferencesResource(R.xml.preferences);
         Notificare.shared().setSmallIcon(R.drawable.ic_stat_notify_msg);
+		//Notificare.shared().getEventLogger().logCustomEvent("asdad");
 
 	}
 
