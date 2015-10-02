@@ -320,6 +320,24 @@ public class MainActivity extends ActionBarBaseActivity implements BeaconRanging
                     @Override
                     public void onMapLoaded() {
 
+                        for (Circle region : circlesList) {
+                            region.remove();
+                        }
+
+                        circlesList = new ArrayList<Circle>();
+
+                        for (NotificareRegion region : Notificare.shared().getRegions()) {
+                            Circle circle;
+                            circle = map.addCircle(new CircleOptions()
+                                    .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
+                                    .radius(region.getDistance())
+                                    .fillColor(R.color.wildsand)
+                                    .strokeColor(0)
+                                    .strokeWidth(0));
+
+                            circlesList.add(circle);
+                        }
+
                     }
                 });
 
