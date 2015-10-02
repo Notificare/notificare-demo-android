@@ -1,0 +1,6 @@
+developmentApplicationKey =
+developmentApplicationSecret =
+productionApplicationKey =
+productionApplicationSecret =
+gcmSender =
+production = false
