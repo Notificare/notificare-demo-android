@@ -18,9 +18,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
-
-import org.apache.http.Header;
+import com.koushikdutta.ion.Ion;
 
 import re.notifica.Notificare;
 import re.notifica.NotificareCallback;
@@ -155,24 +153,11 @@ public class UserProfileAdapter extends BaseAdapter {
                     holder.email.setTypeface(lightFont);
                     holder.token.setTypeface(lightFont);
 
-                    String url = "/" + md5(itemHash.get("email").trim().toLowerCase()) + "?s=160";
+                    String url = "http://gravatar.com/avatar/" + md5(itemHash.get("email").trim().toLowerCase()) + "?s=160";
 
                     final ViewHolder finalHolder = holder;
-                    GravatarHandler.get(url, null, new AsyncHttpResponseHandler() {
-
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                            Bitmap image = BitmapFactory.decodeByteArray(responseBody, 0, responseBody.length);
-                            finalHolder.icon.setImageBitmap(image);
-
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
-                        }
-                    });
-                     break;
+                    Ion.with(finalHolder.icon).load(url);
+                    break;
                 case TYPE_SEPARATOR:
                     convertView = inflater.inflate(R.layout.row_header, null);
                     holder.name = (TextView) convertView.findViewById(R.id.item_label);

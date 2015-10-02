@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "re.notifica.app"
         minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 10001
-        versionName "1.0.1"
+        targetSdkVersion 23
+        versionCode 10600
+        versionName "1.6.0"
     }
     buildTypes {
         release {
@@ -22,8 +22,8 @@ android {
 repositories {
     mavenCentral()
     maven {
-        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
-        //url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
+        //url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
+        url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
         //url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
     }
     flatDir {
@@ -32,9 +32,9 @@ repositories {
 }
 
 dependencies {
-    compile 'com.loopj.android:android-async-http:1.4.5'
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.5.6', ext:'aar', transitive: true
-    compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.5.1', ext: 'aar', transitive: true
+    compile group: 'com.koushikdutta.ion', name: 'ion', version: '2.1.6', ext: 'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.6.0', ext:'aar', transitive: true
+    compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.6.1', ext: 'aar', transitive: true
 }
 
 //configurations.all {
