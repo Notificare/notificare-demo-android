@@ -33,3 +33,6 @@ build/
 
 # Extra libs
 libs/
+
+# Notificare properties
+notificareconfig.properties
