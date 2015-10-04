@@ -1,23 +1,5 @@
 package re.notifica.app;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
-import re.notifica.Notificare;
-import re.notifica.NotificareCallback;
-import re.notifica.NotificareError;
-import re.notifica.beacon.BeaconRangingListener;
-import re.notifica.billing.BillingManager;
-import re.notifica.billing.BillingResult;
-import re.notifica.billing.Purchase;
-import re.notifica.model.NotificareBeacon;
-import re.notifica.model.NotificareProduct;
-import re.notifica.model.NotificareRegion;
-import re.notifica.model.NotificareUser;
-import re.notifica.support.v7.app.ActionBarBaseActivity;
-import re.notifica.ui.UserPreferencesActivity;
-
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -28,11 +10,9 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,11 +33,28 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
-import android.support.v7.app.ActionBarActivity;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import re.notifica.Notificare;
+import re.notifica.NotificareCallback;
+import re.notifica.NotificareError;
+import re.notifica.beacon.BeaconRangingListener;
+import re.notifica.billing.BillingManager;
+import re.notifica.billing.BillingResult;
+import re.notifica.billing.Purchase;
+import re.notifica.model.NotificareApplicationInfo;
+import re.notifica.model.NotificareBeacon;
+import re.notifica.model.NotificareProduct;
+import re.notifica.model.NotificareRegion;
+import re.notifica.support.v7.app.ActionBarBaseActivity;
+import re.notifica.ui.UserPreferencesActivity;
 
 
-public class MainActivity extends ActionBarBaseActivity implements BeaconRangingListener,Notificare.OnBillingReadyListener, BillingManager.OnRefreshFinishedListener, BillingManager.OnPurchaseFinishedListener {
+public class MainActivity extends ActionBarBaseActivity implements Notificare.OnNotificareReadyListener, BeaconRangingListener,Notificare.OnBillingReadyListener, BillingManager.OnRefreshFinishedListener, BillingManager.OnPurchaseFinishedListener {
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     public GoogleMap map;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -80,6 +77,7 @@ public class MainActivity extends ActionBarBaseActivity implements BeaconRanging
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         builder = new AlertDialog.Builder(this);
@@ -129,34 +127,14 @@ public class MainActivity extends ActionBarBaseActivity implements BeaconRanging
         if (savedInstanceState == null) {
             selectItem(0);
         }
-        
-        Notificare.shared().fetchUserDetails(new NotificareCallback<NotificareUser>() {
-
-			@Override
-			public void onError(NotificareError arg0) {
-
-			}
-
-			@Override
-			public void onSuccess(NotificareUser arg0) {
-				Notificare.shared().setUserId(arg0.getUserId());
-				Notificare.shared().registerDevice(Notificare.shared().getDeviceId(), arg0.getUserId(), arg0.getUserName(), new NotificareCallback<String>() {
-
-					@Override
-					public void onSuccess(String result) {
-
-					}
-
-					@Override
-					public void onError(NotificareError error) {
-
-					}
-				});
-			}
-        	
-        });
+        Notificare.shared().addNotificareReadyListener(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Notificare.shared().removeNotificareReadyListener(this);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -249,7 +227,7 @@ public class MainActivity extends ActionBarBaseActivity implements BeaconRanging
                     mOptionsMenu.getItem(0).setVisible(false);
                 }
 
-                switch(mOptionsMenu.getItem(0).getItemId()) {
+                switch (mOptionsMenu.getItem(0).getItemId()) {
                     case R.id.action_ibeacons:
                         if (notificareBeacons.size() > 0) {
                             Log.d(TAG, "HEY THERE");
@@ -548,6 +526,44 @@ public class MainActivity extends ActionBarBaseActivity implements BeaconRanging
         super.onPause();
         Notificare.shared().removeBillingReadyListener(this);
         //Notificare.shared().setForeground(false);
+    }
+
+    @Override
+    public void onNotificareReady(NotificareApplicationInfo info) {
+        if (!Notificare.shared().hasLocationPermissionGranted()) {
+            Log.i(TAG, "permission not granted");
+            if (Notificare.shared().didRequestLocationPermission()) {
+                if (Notificare.shared().shouldShowRequestPermissionRationale(this)) {
+                    // Here we should show a dialog explaining location updates
+                    builder.setMessage(R.string.alert_location_permission_rationale)
+                            .setTitle(R.string.app_name)
+                            .setCancelable(true)
+                            .setPositiveButton(R.string.button_location_permission_rationale_ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Notificare.shared().requestLocationPermission(MainActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
+                                }
+                            });
+                    AlertDialog dialogInfo = builder.create();
+                    dialogInfo.show();
+                }
+            } else {
+                Notificare.shared().requestLocationPermission(this, LOCATION_PERMISSION_REQUEST_CODE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (Notificare.shared().checkRequestLocationPermissionResult(permissions, grantResults)) {
+                    Log.i(TAG, "permission granted");
+                    Notificare.shared().enableLocationUpdates();
+                    Notificare.shared().enableBeacons();
+                }
+                return;
+            }
+        }
     }
 
     @Override

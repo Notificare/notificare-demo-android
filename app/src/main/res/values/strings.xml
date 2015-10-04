@@ -59,6 +59,7 @@
     <string name="button_forgot_pass">forgotten password</string>
     <string name="button_lost_pass">recover password</string>
     <string name="button_reset_pass">reset password</string>
+    <string name="button_location_permission_rationale_ok">got it</string>
     <string name="error_sign_in">Invalid credentials</string>
     <string name="error_sign_up">Please fill in all fields</string>
     <string name="error_lost_pass">Please fill in a valid email</string>
@@ -83,4 +84,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_user_position">Your current location</string>
     <string name="alert_inapp_purchase_demo">This add-on is not available for this demo app. Please send us your contact and we will invite you to a in-app billing demo app.</string>
+    <string name="alert_location_permission_rationale">We will need to make use of your location to present relevant information about offers around you.</string>
 </resources>
