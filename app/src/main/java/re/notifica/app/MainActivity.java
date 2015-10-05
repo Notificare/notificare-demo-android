@@ -536,15 +536,15 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 if (Notificare.shared().shouldShowRequestPermissionRationale(this)) {
                     // Here we should show a dialog explaining location updates
                     builder.setMessage(R.string.alert_location_permission_rationale)
-                            .setTitle(R.string.app_name)
-                            .setCancelable(true)
-                            .setPositiveButton(R.string.button_location_permission_rationale_ok, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Notificare.shared().requestLocationPermission(MainActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
-                                }
-                            });
-                    AlertDialog dialogInfo = builder.create();
-                    dialogInfo.show();
+                        .setTitle(R.string.app_name)
+                        .setCancelable(true)
+                        .setPositiveButton(R.string.button_location_permission_rationale_ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Notificare.shared().requestLocationPermission(MainActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
+                            }
+                        })
+                    .create()
+                    .show();
                 }
             } else {
                 Notificare.shared().requestLocationPermission(this, LOCATION_PERMISSION_REQUEST_CODE);
