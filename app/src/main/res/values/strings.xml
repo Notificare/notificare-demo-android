@@ -44,6 +44,7 @@
     <string name="title_signout">signout</string>
     <string name="title_inbox">Inbox</string>
     <string name="title_products">Products</string>
+    <string name="title_clear">Clear</string>
     <string name="title_delete">Delete</string>
     <string name="title_empty_products">No products found</string>
     <string name="title_empty_inbox">No messages found</string>

@@ -29,7 +29,7 @@
     <application
         android:name="re.notifica.app.AppBaseApplication"
         android:allowClearUserData="true"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >

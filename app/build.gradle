@@ -8,8 +8,8 @@ android {
         applicationId "re.notifica.app"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 10600
-        versionName "1.6.0"
+        versionCode 10602
+        versionName "1.6.2"
     }
     buildTypes {
         release {
@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
     compile group: 'com.koushikdutta.ion', name: 'ion', version: '2.1.6', ext: 'aar', transitive: true
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.6.0', ext:'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.6.2', ext:'aar', transitive: true
     compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.6.1', ext: 'aar', transitive: true
 }
 

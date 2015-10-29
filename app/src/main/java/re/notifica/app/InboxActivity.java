@@ -34,6 +34,7 @@ public class InboxActivity extends ActionBarBaseActivity {
     private ArrayList<Integer> itemsToRemove;
     protected ArrayAdapter<NotificareInboxItem> inboxListAdapter;
     private ActionMode mActionMode;
+    private Menu mOptionsMenu;
     protected static final String TAG = InboxActivity.class.getSimpleName();
 
     private Typeface lightFont;
@@ -96,6 +97,30 @@ public class InboxActivity extends ActionBarBaseActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        mOptionsMenu = menu;
+
+        inflater.inflate(R.menu.inbox, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action buttons
+        switch(item.getItemId()) {
+            case R.id.action_clear:
+                inboxListAdapter.clear();
+                if (Notificare.shared().getInboxManager() != null) {
+                    Notificare.shared().getInboxManager().clearInbox();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -155,7 +180,7 @@ public class InboxActivity extends ActionBarBaseActivity {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.inbox, menu);
+            inflater.inflate(R.menu.inbox_action, menu);
 
             return true;
         }
