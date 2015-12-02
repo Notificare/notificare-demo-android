@@ -1,4 +1,15 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.3.0'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 23
@@ -32,7 +43,6 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.koushikdutta.ion', name: 'ion', version: '2.1.6', ext: 'aar', transitive: true
     compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.6.3', ext:'aar', transitive: true
     compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.7.1', ext: 'aar', transitive: true
 }

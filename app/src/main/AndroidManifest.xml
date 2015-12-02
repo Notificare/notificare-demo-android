@@ -87,7 +87,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/validate/5489b42ff23e5815132b492a" /> //Replace with your own app ID
+                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/validate/5489b42ff23e5815132b492a" />
             </intent-filter>
         </activity>
         <activity
