@@ -1,0 +1,31 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="re.notifica.app">
+
+    <application>
+        <activity
+            android:name="re.notifica.app.ResetPassActivity"
+            android:label="@string/title_reset_pass"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="push-test.notifica.re" android:pathPrefix="/oauth/resetpassword/55aca82cf231d9e80ef851d2" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="re.notifica.app.ValidateActivity"
+            android:label="@string/title_validate"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="push-test.notifica.re" android:pathPrefix="/oauth/validate/55aca82cf231d9e80ef851d2" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

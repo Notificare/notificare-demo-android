@@ -16,4 +16,4 @@ Demo for GCM, Tags, Location Services and OAuth2 features of Notificare
 ## Build Variants
 
 This app has 2 build flavors, a normal, production one and a apiTest flavor, which will only work internally in Notificare.
-You can use this as an example for your own build variants
+You can however use this as an example for your own build variants
