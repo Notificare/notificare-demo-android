@@ -2,7 +2,7 @@ notificare-demo-android
 =========
 Demo for GCM, Tags, Location Services and OAuth2 features of Notificare
 
-##Setup
+## Setup
 
 1. Open ```assets/notificareconfig.properties``` and replace the properties found in that file with the ones you get from the API Keys in your dashboard.
 2. In ```GCMSender``` please use the project number found in the Google Developer Console.
@@ -12,3 +12,8 @@ Demo for GCM, Tags, Location Services and OAuth2 features of Notificare
 6. Start sending rich push messages, using geo-targeting and geo-fences.
 7. Authentication will only work if you subscribe for the OAuth2 Service in https://dashboard.notifica.re under **Settings > Services**
 8. To enable beacon support, download the AltBeacon library from http://altbeacon.github.io/android-beacon-library/download.html and put the .aar file in a 'libs' folder in your project. If you are not gonna use beacons, comment out the references in your app to beacon-specific classes and comment out the dependency in  build.gradle
+
+## Build Variants
+
+This app has 2 build flavors, a normal, production one and a apiTest flavor, which will only work internally in Notificare.
+You can use this as an example for your own build variants

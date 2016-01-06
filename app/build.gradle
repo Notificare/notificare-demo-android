@@ -14,13 +14,12 @@ apply plugin: 'com.getkeepsafe.dexcount'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "re.notifica.app"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 10603
-        versionName "1.6.3"
+        versionCode 10606
+        versionName "1.6.6"
     }
     buildTypes {
         release {
@@ -28,13 +27,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+        production {}
+        apiTest {
+            applicationId "re.notifica.test.app"
+        }
+    }
+
 }
 
 repositories {
     jcenter()
     maven {
-        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
-        //url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
+        //url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
+        url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
         //url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
     }
     flatDir {
@@ -43,10 +49,10 @@ repositories {
 }
 
 dependencies {
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.6.3', ext:'aar', transitive: true
-    compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.7.1', ext: 'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version:'1.6.6', ext: 'aar', transitive: true
+    compile 'org.altbeacon:android-beacon-library:2.7.1@aar'
 }
 
-//configurations.all {
-//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-//}
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
