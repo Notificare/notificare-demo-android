@@ -292,7 +292,9 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
 				getFragmentManager().executePendingTransactions();
 
 				map = mMapFragment.getMap();
-				map.setMyLocationEnabled(true);
+                if (Notificare.shared().hasLocationPermissionGranted()) {
+                    map.setMyLocationEnabled(true);
+                }
                 map.animateCamera( CameraUpdateFactory.zoomTo( map.getMaxZoomLevel() - 6.0f ) );
                 map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
                     @Override
@@ -559,7 +561,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 if (Notificare.shared().checkRequestLocationPermissionResult(permissions, grantResults)) {
                     Log.i(TAG, "permission granted");
                     Notificare.shared().enableLocationUpdates();
-                    Notificare.shared().enableBeacons(60000);
+                    Notificare.shared().enableBeacons(10000);
                 }
                 break;
         }

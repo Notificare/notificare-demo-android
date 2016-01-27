@@ -19,25 +19,34 @@ public class AppReceiver extends DefaultIntentReceiver {
 	private static final String TAG = AppReceiver.class.getSimpleName();
 
 	@Override
-	public void onNotificationReceived(String alert, String notificationId,
-			Bundle extras) {
+	public void onNotificationReceived(String alert, String notificationId, String inboxItemId, Bundle extras) {
 		// Execute default behavior, i.e., put notification in drawer
-		Log.d(TAG, " received with extra Notification" + extras.getString("mykey"));
-		super.onNotificationReceived(alert, notificationId, extras);
+		Log.d(TAG, "Notification received with extra " + extras.getString("mykey"));
+		Log.d(TAG, "Notification received with inboxItemId " + inboxItemId);
+		super.onNotificationReceived(alert, notificationId, inboxItemId, extras);
 	}
 
 	@Override
-	public void onNotificationOpened(String alert, String notificationId,
-			Bundle extras) {
+	public void onNotificationOpened(String alert, String notificationId, String inboxItemId, Bundle extras) {
 		// Notification is in extras
 		NotificareNotification notification = extras.getParcelable(Notificare.INTENT_EXTRA_NOTIFICATION);
 		Log.d(TAG, "Notification was opened with type " + notification.getType());
+		Log.d(TAG, "Notification was opened with inboxItemId " + inboxItemId);
 		Log.d(TAG, "Notification was opened with extra " + notification.getExtra().get("mykey"));
 		// By default, open the NotificationActivity and let it handle the Notification
-		super.onNotificationOpened(alert, notificationId, extras);
+		super.onNotificationOpened(alert, notificationId, inboxItemId, extras);
 	}
 
-    @Override
+	@Override
+	public void onUrlClicked(Uri urlClicked, Bundle extras) {
+		Log.i(TAG, "URL was clicked: " + urlClicked);
+		NotificareNotification notification = extras.getParcelable(Notificare.INTENT_EXTRA_NOTIFICATION);
+		if (notification != null) {
+			Log.i(TAG, "URL was clicked for \"" + notification.getMessage() + "\"");
+		}
+	}
+
+	@Override
     public void onReady() {
         Notificare.shared().enableNotifications();
 //        Notificare.shared().enableBilling();
@@ -54,7 +63,7 @@ public class AppReceiver extends DefaultIntentReceiver {
 			public void onSuccess(String result) {
 				if (Notificare.shared().isLocationUpdatesEnabled()) {
 					Notificare.shared().enableLocationUpdates();
-					Notificare.shared().enableBeacons(60000);
+					Notificare.shared().enableBeacons(10000);
 				}
 				Notificare.shared().fetchDeviceTags(new NotificareCallback<List<String>>() {
 
