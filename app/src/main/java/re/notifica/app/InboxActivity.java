@@ -1,9 +1,12 @@
 package re.notifica.app;
 
 import re.notifica.Notificare;
+import re.notifica.NotificareCallback;
+import re.notifica.NotificareError;
 import re.notifica.model.NotificareInboxItem;
 import re.notifica.push.gcm.BaseActivity;
 import re.notifica.support.v7.app.ActionBarBaseActivity;
+import re.notifica.util.Log;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -116,6 +119,17 @@ public class InboxActivity extends ActionBarBaseActivity {
                 if (Notificare.shared().getInboxManager() != null) {
                     Notificare.shared().getInboxManager().clearInbox();
                 }
+                Notificare.shared().clearInbox(new NotificareCallback<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        Log.d(TAG, "Inbox cleared");
+                    }
+
+                    @Override
+                    public void onError(NotificareError notificareError) {
+                        Log.e(TAG, "Failed to clear inbox: " + notificareError.getMessage());
+                    }
+                });
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -201,6 +215,17 @@ public class InboxActivity extends ActionBarBaseActivity {
                     for(Integer position : itemsToRemove){
                         NotificareInboxItem msg = inboxListAdapter.getItem(position);
                         Notificare.shared().getInboxManager().removeItem(msg);
+                        Notificare.shared().deleteInboxItem(msg.getItemId(), new NotificareCallback<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean aBoolean) {
+                                Log.d(TAG, "Removed inboxItem");
+                            }
+
+                            @Override
+                            public void onError(NotificareError notificareError) {
+                                Log.e(TAG, "Failed to remove inboxItem: " + notificareError.getMessage());
+                            }
+                        });
                         inboxListAdapter.remove(msg);
                     }
 
