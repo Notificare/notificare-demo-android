@@ -44,6 +44,7 @@ import re.notifica.beacon.BeaconRangingListener;
 import re.notifica.billing.BillingManager;
 import re.notifica.billing.BillingResult;
 import re.notifica.billing.Purchase;
+import re.notifica.model.NotificareAction;
 import re.notifica.model.NotificareApplicationInfo;
 import re.notifica.model.NotificareBeacon;
 import re.notifica.model.NotificareProduct;
@@ -78,6 +79,14 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        Log.i(TAG, "Created with intent: " + getIntent().toString());
+//        if (getIntent() != null && getIntent().hasExtra(Notificare.INTENT_EXTRA_NOTIFICATION)) {
+//            NotificareAction action = getIntent().getParcelableExtra(Notificare.INTENT_EXTRA_ACTION);
+//            if (action != null) {
+//                Log.i(TAG, "Action: " + action.getLabel());
+//            }
+//            handleNotificationOpenedIntent(getIntent());
+//        }
         setContentView(R.layout.activity_main);
 
         builder = new AlertDialog.Builder(this);
@@ -128,6 +137,16 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
             selectItem(0);
         }
         Notificare.shared().addNotificareReadyListener(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.i(TAG, "New intent: " + getIntent().toString());
+
+//        if (intent != null && intent.hasExtra(Notificare.INTENT_EXTRA_NOTIFICATION)) {
+//            handleNotificationOpenedIntent(intent);
+//        }
     }
 
     @Override

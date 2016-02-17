@@ -18,8 +18,8 @@ android {
         applicationId "re.notifica.app"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 10606
-        versionName "1.7.0"
+        versionCode 10702
+        versionName "1.7.2"
     }
     buildTypes {
         release {
@@ -49,7 +49,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version:'1.7.0', ext: 'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version:'1.7.2', ext: 'aar', transitive: true
     compile group: 'org.altbeacon', name:'android-beacon-library', version:'2.7.1', ext: 'aar', transitive: true
 }
 

@@ -42,8 +42,17 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
+            <!--<intent-filter>-->
+                <!--<action android:name="re.notifica.intent.action.NotificationOpened" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--</intent-filter>-->
         </activity>
+
+        <!--<activity-->
+            <!--android:name="re.notifica.ui.NotificationActivity"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:configChanges="keyboardHidden|orientation" />-->
+
         <activity
             android:name="re.notifica.ui.NotificationActivity"
             android:parentActivityName="re.notifica.app.MainActivity"
@@ -175,6 +184,9 @@
         <!-- API key for Google Maps -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyASd9psfiY0OWOjrjmalerIT6tQ9F_pyaQ" />
+        <meta-data
+            android:name="com.google.android.nearby.messages.API_KEY"
             android:value="AIzaSyASd9psfiY0OWOjrjmalerIT6tQ9F_pyaQ" />
         <meta-data
             android:name="re.notifica.metadata.UrlSchemes"
