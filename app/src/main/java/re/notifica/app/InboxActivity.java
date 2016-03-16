@@ -4,6 +4,7 @@ import re.notifica.Notificare;
 import re.notifica.NotificareCallback;
 import re.notifica.NotificareError;
 import re.notifica.model.NotificareInboxItem;
+import re.notifica.model.NotificareNotification;
 import re.notifica.push.gcm.BaseActivity;
 import re.notifica.support.v7.app.ActionBarBaseActivity;
 import re.notifica.util.Log;
@@ -31,7 +32,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class InboxActivity extends ActionBarBaseActivity {
+public class InboxActivity extends ActionBarBaseActivity implements Notificare.OnNotificationReceivedListener {
 
     private ListView listView;
     private ArrayList<Integer> itemsToRemove;
@@ -139,12 +140,32 @@ public class InboxActivity extends ActionBarBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Notificare.shared().addNotificationReceivedListener(this);
+        inboxListAdapter.clear();
+        if (Notificare.shared().getInboxManager() != null) {
+            for (NotificareInboxItem item : Notificare.shared().getInboxManager().getItems()) {
+                inboxListAdapter.add(item);
+            }
+            Log.i(TAG, "Unread message count: " + Notificare.shared().getInboxManager().getUnreadCount());
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Notificare.shared().removeNotificationReceivedListener(this);
+    }
+
+    @Override
+    public void onNotificationReceived(NotificareNotification notificareNotification) {
+        Log.i(TAG, "Notification received: " + notificareNotification.getMessage());
         inboxListAdapter.clear();
         if (Notificare.shared().getInboxManager() != null) {
             for (NotificareInboxItem item : Notificare.shared().getInboxManager().getItems()) {
                 inboxListAdapter.add(item);
             }
         }
+        Log.i(TAG, "Unread message count: " + Notificare.shared().getInboxManager().getUnreadCount());
     }
 
     /**
