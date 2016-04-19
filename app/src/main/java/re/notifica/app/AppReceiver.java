@@ -38,6 +38,11 @@ public class AppReceiver extends DefaultIntentReceiver {
 	}
 
 	@Override
+	public void onNotificationOpenRegistered(NotificareNotification notification, Boolean handled) {
+		Log.d(TAG, "Notification with type " + notification.getType() + " was opened, handled by SDK: " + handled);
+	}
+
+	@Override
 	public void onUrlClicked(Uri urlClicked, Bundle extras) {
 		Log.i(TAG, "URL was clicked: " + urlClicked);
 		NotificareNotification notification = extras.getParcelable(Notificare.INTENT_EXTRA_NOTIFICATION);
@@ -63,7 +68,7 @@ public class AppReceiver extends DefaultIntentReceiver {
 			public void onSuccess(String result) {
 				if (Notificare.shared().isLocationUpdatesEnabled()) {
 					Notificare.shared().enableLocationUpdates();
-					Notificare.shared().enableBeacons(10000);
+					//Notificare.shared().enableBeacons(10000);
 				}
 				Notificare.shared().fetchDeviceTags(new NotificareCallback<List<String>>() {
 

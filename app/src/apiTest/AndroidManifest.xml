@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="re.notifica.app">
 
     <application>
@@ -26,6 +27,13 @@
                 <data android:scheme="https" android:host="push-test.notifica.re" android:pathPrefix="/oauth/validate/55aca82cf231d9e80ef851d2" />
             </intent-filter>
         </activity>
+
+        <!-- API key for Google Maps -->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBhJiakK9U-PS8_1HG1pAYlqUxrLvNeqMs"
+            tools:replace="android:value" />
+
     </application>
 
 </manifest>

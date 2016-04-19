@@ -13,13 +13,13 @@ apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
     defaultConfig {
         applicationId "re.notifica.app"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 10704
-        versionName "1.7.4"
+        versionCode 10800
+        versionName "1.8.0"
     }
     buildTypes {
         release {
@@ -40,8 +40,8 @@ repositories {
     jcenter()
     maven {
         url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
-        //url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
-        //url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
+//        url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
+//        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
     }
     flatDir {
         dirs 'libs'
@@ -49,7 +49,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version:'1.7.4', ext: 'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version:'1.8.0', ext: 'aar', transitive: true
     compile group: 'org.altbeacon', name:'android-beacon-library', version:'2.7.1', ext: 'aar', transitive: true
 }
 

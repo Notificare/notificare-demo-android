@@ -33,6 +33,9 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -46,7 +49,10 @@ import re.notifica.billing.BillingResult;
 import re.notifica.billing.Purchase;
 import re.notifica.model.NotificareAction;
 import re.notifica.model.NotificareApplicationInfo;
+import re.notifica.model.NotificareAsset;
 import re.notifica.model.NotificareBeacon;
+import re.notifica.model.NotificarePass;
+import re.notifica.model.NotificarePassRedemption;
 import re.notifica.model.NotificareProduct;
 import re.notifica.model.NotificareRegion;
 import re.notifica.support.v7.app.ActionBarBaseActivity;
@@ -110,8 +116,10 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -271,6 +279,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
         }
     }
 
+    @SuppressWarnings({"MissingPermission"})
     private void selectItem(int position) {
 
     	String values [] =  getResources().getStringArray(R.array.navigation_urls);
@@ -293,157 +302,123 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
             setTitle(navigationLabels[position]);
             
 		}else {
-			if(second.equals("Map")){
+            switch (second) {
+                case "Map":
 
-				GoogleMapOptions options = new GoogleMapOptions();
-				options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-				.compassEnabled(true)
-				.rotateGesturesEnabled(true)
-				.scrollGesturesEnabled(true)
-				.tiltGesturesEnabled(true)
-				.zoomGesturesEnabled(true)
-				.zoomControlsEnabled(true);
+                    GoogleMapOptions options = new GoogleMapOptions();
+                    options.mapType(GoogleMap.MAP_TYPE_NORMAL)
+                            .compassEnabled(true)
+                            .rotateGesturesEnabled(true)
+                            .scrollGesturesEnabled(true)
+                            .tiltGesturesEnabled(true)
+                            .zoomGesturesEnabled(true)
+                            .zoomControlsEnabled(true);
 
-				MapFragment mMapFragment = MapFragment.newInstance(options);
-				android.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-				fragmentTransaction.add(R.id.content_frame, mMapFragment);
-				fragmentTransaction.commit();
-				getFragmentManager().executePendingTransactions();
+                    MapFragment mMapFragment = MapFragment.newInstance(options);
+                    android.app.FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    fragmentTransaction.add(R.id.content_frame, mMapFragment);
+                    fragmentTransaction.commit();
+                    getFragmentManager().executePendingTransactions();
 
-				map = mMapFragment.getMap();
-                if (Notificare.shared().hasLocationPermissionGranted()) {
-                    map.setMyLocationEnabled(true);
-                }
-                map.animateCamera( CameraUpdateFactory.zoomTo( map.getMaxZoomLevel() - 6.0f ) );
-                map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-                    @Override
-                    public void onMapLoaded() {
-
-                        for (Circle region : circlesList) {
-                            region.remove();
-                        }
-
-                        circlesList = new ArrayList<Circle>();
-
-                        for (NotificareRegion region : Notificare.shared().getRegions()) {
-                            Circle circle;
-                            circle = map.addCircle(new CircleOptions()
-                                    .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
-                                    .radius(region.getDistance())
-                                    .fillColor(R.color.wildsand)
-                                    .strokeColor(0)
-                                    .strokeWidth(0));
-
-                            circlesList.add(circle);
-                        }
-
+                    map = mMapFragment.getMap();
+                    if (Notificare.shared().hasLocationPermissionGranted()) {
+                        map.setMyLocationEnabled(true);
                     }
-                });
+                    map.animateCamera(CameraUpdateFactory.zoomTo(map.getMaxZoomLevel() - 6.0f));
+                    map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+                        @Override
+                        public void onMapLoaded() {
 
-
-				map.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
-
-                    @Override
-                    public void onMyLocationChange(Location location) {
-
-                        for (Circle region : circlesList) {
-                            region.remove();
-                        }
-
-                        circlesList = new ArrayList<Circle>();
-
-                        for (NotificareRegion region : Notificare.shared().getRegions()) {
-                            Circle circle;
-                            circle = map.addCircle(new CircleOptions()
-                                    .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
-                                    .radius(region.getDistance())
-                                    .fillColor(R.color.wildsand)
-                                    .strokeColor(0)
-                                    .strokeWidth(0));
-
-                            circlesList.add(circle);
-                        }
-
-
-                        float zoom = map.getCameraPosition().zoom;
-
-                        LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoom));
-                    }
-                });
-
-
-
-		        // update selected item and title, then close the drawer
-		        mDrawerList.setItemChecked(position, true);
-		        setTitle(navigationLabels[position]);
-
-			} else if (second.equals("Beacons")) {
-
-                BeaconsFragment beaconsFragment = new BeaconsFragment();
-                Bundle args = new Bundle();
-                args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
-                beaconsFragment.setArguments(args);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, beaconsFragment).commit();
-
-                // update selected item and title, then close the drawer
-                mDrawerList.setItemChecked(position, true);
-                setTitle(navigationLabels[position]);
-
-                //startActivity(new Intent(MainActivity.this, BeaconsActivity.class));
-
-            } else if (second.equals("Settings")) {
-
-				startActivity(new Intent(MainActivity.this, UserPreferencesActivity.class));
-
-			} else if (second.equals("Inbox")) {
-
-                startActivity(new Intent(MainActivity.this, InboxActivity.class));
-
-            } else if (second.equals("Products")) {
-
-                ProductsFragment fragment = new ProductsFragment();
-                fragment.productListAdapter = productListAdapter;
-                Bundle args = new Bundle();
-                args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
-                fragment.setArguments(args);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-                // update selected item and title, then close the drawer
-                mDrawerList.setItemChecked(position, true);
-                setTitle(navigationLabels[position]);
-
-                builder.setMessage(R.string.alert_inapp_purchase_demo)
-                        .setTitle(R.string.app_name)
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-
+                            for (Circle region : circlesList) {
+                                region.remove();
                             }
-                        });
-                AlertDialog dialogInfo = builder.create();
-                dialogInfo.show();
 
-            } else if (second.equals("Main")) {
+                            circlesList = new ArrayList<Circle>();
 
-                Fragment fragment = new MainFragment();
-                Bundle args = new Bundle();
-                args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
-                fragment.setArguments(args);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                            for (NotificareRegion region : Notificare.shared().getRegions()) {
+                                Circle circle;
+                                circle = map.addCircle(new CircleOptions()
+                                        .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
+                                        .radius(region.getDistance())
+                                        .fillColor(R.color.wildsand)
+                                        .strokeColor(0)
+                                        .strokeWidth(0));
 
-                // update selected item and title, then close the drawer
-                mDrawerList.setItemChecked(position, true);
-                setTitle(navigationLabels[position]);
+                                circlesList.add(circle);
+                            }
 
-            } else {
+                        }
+                    });
 
-				if(!Notificare.shared().isLoggedIn()){
 
-                    Fragment fragment = new SignInFragment();
+                    map.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
+
+                        @Override
+                        public void onMyLocationChange(Location location) {
+
+                            for (Circle region : circlesList) {
+                                region.remove();
+                            }
+
+                            circlesList = new ArrayList<Circle>();
+
+                            for (NotificareRegion region : Notificare.shared().getRegions()) {
+                                Circle circle;
+                                circle = map.addCircle(new CircleOptions()
+                                        .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
+                                        .radius(region.getDistance())
+                                        .fillColor(R.color.wildsand)
+                                        .strokeColor(0)
+                                        .strokeWidth(0));
+
+                                circlesList.add(circle);
+                            }
+
+
+                            float zoom = map.getCameraPosition().zoom;
+
+                            LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoom));
+                        }
+                    });
+
+
+                    // update selected item and title, then close the drawer
+                    mDrawerList.setItemChecked(position, true);
+                    setTitle(navigationLabels[position]);
+
+                    break;
+                case "Beacons": {
+
+                    BeaconsFragment beaconsFragment = new BeaconsFragment();
+                    Bundle args = new Bundle();
+                    args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
+                    beaconsFragment.setArguments(args);
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, beaconsFragment).commit();
+
+                    // update selected item and title, then close the drawer
+                    mDrawerList.setItemChecked(position, true);
+                    setTitle(navigationLabels[position]);
+
+                    //startActivity(new Intent(MainActivity.this, BeaconsActivity.class));
+
+                    break;
+                }
+                case "Settings":
+
+                    startActivity(new Intent(MainActivity.this, UserPreferencesActivity.class));
+
+                    break;
+                case "Inbox":
+
+                    startActivity(new Intent(MainActivity.this, InboxActivity.class));
+
+                    break;
+                case "Products": {
+
+                    ProductsFragment fragment = new ProductsFragment();
+                    fragment.productListAdapter = productListAdapter;
                     Bundle args = new Bundle();
                     args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
                     fragment.setArguments(args);
@@ -454,10 +429,24 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                     mDrawerList.setItemChecked(position, true);
                     setTitle(navigationLabels[position]);
 
-				} else {
-                    Fragment fragment = new UserProfileFragment();
+                    builder.setMessage(R.string.alert_inapp_purchase_demo)
+                            .setTitle(R.string.app_name)
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                }
+                            });
+                    AlertDialog dialogInfo = builder.create();
+                    dialogInfo.show();
+
+                    break;
+                }
+                case "Main": {
+
+                    Fragment fragment = new MainFragment();
                     Bundle args = new Bundle();
-                    args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, position);
+                    args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
                     fragment.setArguments(args);
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -465,8 +454,38 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                     // update selected item and title, then close the drawer
                     mDrawerList.setItemChecked(position, true);
                     setTitle(navigationLabels[position]);
+
+                    break;
                 }
-			}
+                default:
+
+                    if (!Notificare.shared().isLoggedIn()) {
+
+                        Fragment fragment = new SignInFragment();
+                        Bundle args = new Bundle();
+                        args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, position);
+                        fragment.setArguments(args);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                        // update selected item and title, then close the drawer
+                        mDrawerList.setItemChecked(position, true);
+                        setTitle(navigationLabels[position]);
+
+                    } else {
+                        Fragment fragment = new UserProfileFragment();
+                        Bundle args = new Bundle();
+                        args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, position);
+                        fragment.setArguments(args);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+                        // update selected item and title, then close the drawer
+                        mDrawerList.setItemChecked(position, true);
+                        setTitle(navigationLabels[position]);
+                    }
+                    break;
+            }
 		}
 
 
@@ -477,7 +496,9 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(mTitle);
+        }
     }
 
     /**
@@ -550,7 +571,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
     }
 
     @Override
-    public void onNotificareReady(NotificareApplicationInfo info) {
+    public void onNotificareReady(final NotificareApplicationInfo info) {
         if (!Notificare.shared().hasLocationPermissionGranted()) {
             Log.i(TAG, "permission not granted");
             if (Notificare.shared().didRequestLocationPermission()) {
@@ -571,6 +592,34 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 Notificare.shared().requestLocationPermission(this, LOCATION_PERMISSION_REQUEST_CODE);
             }
         }
+        Notificare.shared().fetchAssets("test", new NotificareCallback<List<NotificareAsset>>() {
+            @Override
+            public void onSuccess(List<NotificareAsset> notificareAssets) {
+                for (NotificareAsset asset : notificareAssets) {
+                    Log.d(TAG, asset.getTitle());
+                    Log.d(TAG, asset.getOriginalFileName());
+                }
+            }
+
+            @Override
+            public void onError(NotificareError notificareError) {
+                Log.e(TAG, "Error: " + notificareError.getMessage());
+            }
+        });
+
+        Notificare.shared().fetchPass("505971ff-a0ee-4977-8dfa-a579d4795b44", new NotificareCallback<NotificarePass>() {
+            @Override
+            public void onSuccess(NotificarePass notificarePass) {
+                for (NotificarePassRedemption redemption : notificarePass.getRedeemHistory()) {
+                    Log.d(TAG, "Redemption at " + redemption.getDate() + ": " + redemption.getComments());
+                }
+            }
+
+            @Override
+            public void onError(NotificareError notificareError) {
+                Log.e(TAG, "Error: " + notificareError.getMessage());
+            }
+        });
     }
 
     @Override
@@ -580,7 +629,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 if (Notificare.shared().checkRequestLocationPermissionResult(permissions, grantResults)) {
                     Log.i(TAG, "permission granted");
                     Notificare.shared().enableLocationUpdates();
-                    Notificare.shared().enableBeacons(10000);
+                    //Notificare.shared().enableBeacons(10000);
                 }
                 break;
         }
