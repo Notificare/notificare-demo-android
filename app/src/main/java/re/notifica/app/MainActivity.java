@@ -6,10 +6,13 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -59,9 +62,10 @@ import re.notifica.support.v7.app.ActionBarBaseActivity;
 import re.notifica.ui.UserPreferencesActivity;
 
 
-public class MainActivity extends ActionBarBaseActivity implements Notificare.OnNotificareReadyListener, BeaconRangingListener,Notificare.OnBillingReadyListener, BillingManager.OnRefreshFinishedListener, BillingManager.OnPurchaseFinishedListener {
+public class MainActivity extends ActionBarBaseActivity implements Notificare.OnNotificareReadyListener, BeaconRangingListener, Notificare.OnBillingReadyListener, BillingManager.OnRefreshFinishedListener, BillingManager.OnPurchaseFinishedListener {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 2;
     public GoogleMap map;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -128,7 +132,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 mDrawerLayout,         /* DrawerLayout object */
                 R.string.drawer_open,  /* "open drawer" description for accessibility */
                 R.string.drawer_close  /* "close drawer" description for accessibility */
-                ) {
+        ) {
             public void onDrawerClosed(View view) {
                 getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -186,54 +190,54 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-         // The action bar home/up action should open or close the drawer.
-         // ActionBarDrawerToggle will take care of this.
+        // The action bar home/up action should open or close the drawer.
+        // ActionBarDrawerToggle will take care of this.
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         // Handle action buttons
-        switch(item.getItemId()) {
-        case R.id.action_signout:
+        switch (item.getItemId()) {
+            case R.id.action_signout:
 
-            item.setVisible(false);
+                item.setVisible(false);
 
-        	Notificare.shared().userLogout(new NotificareCallback<Boolean>() {
+                Notificare.shared().userLogout(new NotificareCallback<Boolean>() {
 
-                @Override
-                public void onSuccess(Boolean result) {
+                    @Override
+                    public void onSuccess(Boolean result) {
 
-                    SignInFragment fragment = new SignInFragment();
-                    Bundle args = new Bundle();
-                    args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, 4);
-                    fragment.setArguments(args);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-                    mDrawerList.setItemChecked(4, true);
-                    setTitle(navigationLabels[4]);
+                        SignInFragment fragment = new SignInFragment();
+                        Bundle args = new Bundle();
+                        args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, 4);
+                        fragment.setArguments(args);
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                        mDrawerList.setItemChecked(4, true);
+                        setTitle(navigationLabels[4]);
 
-                }
+                    }
 
-                @Override
-                public void onError(NotificareError error) {
+                    @Override
+                    public void onError(NotificareError error) {
 
-                }
-            });
+                    }
+                });
 
-            return true;
-        case R.id.action_ibeacons:
-            BeaconsFragment beaconsFragment = new BeaconsFragment();
-            Bundle args = new Bundle();
-            args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, 3);
-            beaconsFragment.setArguments(args);
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, beaconsFragment).commit();
+                return true;
+            case R.id.action_ibeacons:
+                BeaconsFragment beaconsFragment = new BeaconsFragment();
+                Bundle args = new Bundle();
+                args.putInt(SignInFragment.ARG_NAVIGATION_NUMBER, 3);
+                beaconsFragment.setArguments(args);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, beaconsFragment).commit();
 
-            // update selected item and title, then close the drawer
-            mDrawerList.setItemChecked(3, true);
-            setTitle(navigationLabels[3]);
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+                // update selected item and title, then close the drawer
+                mDrawerList.setItemChecked(3, true);
+                setTitle(navigationLabels[3]);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -282,13 +286,13 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
     @SuppressWarnings({"MissingPermission"})
     private void selectItem(int position) {
 
-    	String values [] =  getResources().getStringArray(R.array.navigation_urls);
-    	StringTokenizer tokens = new StringTokenizer(values[position], ":");
-    	String first = tokens.nextToken();
-    	String second = tokens.nextToken();
+        String values[] = getResources().getStringArray(R.array.navigation_urls);
+        StringTokenizer tokens = new StringTokenizer(values[position], ":");
+        String first = tokens.nextToken();
+        String second = tokens.nextToken();
 
 
-		if (first.equals("http") || second.equals("https")) {
+        if (first.equals("http") || second.equals("https")) {
 
             Fragment fragment = new WebViewFragment();
             Bundle args = new Bundle();
@@ -300,8 +304,8 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
             setTitle(navigationLabels[position]);
-            
-		}else {
+
+        } else {
             switch (second) {
                 case "Map":
 
@@ -442,6 +446,21 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
 
                     break;
                 }
+                case "Assets": {
+                    if (!Notificare.shared().hasServiceEnabled(NotificareApplicationInfo.SERVICE_KEY_STORAGE)) {
+                        new AlertDialog.Builder(this)
+                                .setTitle(R.string.app_name)
+                                .setMessage(R.string.alert_storage_disabled)
+                                .setCancelable(false)
+                                .setPositiveButton("OK", null)
+                                .show();
+                    }
+                    AssetsFragment assetsFragment = new AssetsFragment();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, assetsFragment).commit();
+                    setTitle(navigationLabels[position]);
+                    break;
+                }
                 case "Main": {
 
                     Fragment fragment = new MainFragment();
@@ -486,8 +505,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                     }
                     break;
             }
-		}
-
+        }
 
 
         mDrawerLayout.closeDrawer(mDrawerList);
@@ -521,7 +539,6 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
     }
 
 
-
     public void goToSignup(View view) {
 
         Intent a = new Intent(MainActivity.this, SignUpActivity.class);
@@ -536,13 +553,30 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
 
     }
 
-    public void refreshFragment(){
+    public void refreshFragment() {
         Fragment fragment = new UserProfileFragment();
         Bundle args = new Bundle();
         args.putInt(UserProfileFragment.ARG_NAVIGATION_NUMBER, 4);
         fragment.setArguments(args);
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG, "Permission is granted");
+                return true;
+            } else {
+                Log.v(TAG, "Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Permission is granted");
+            return true;
+        }
     }
 
 
@@ -578,15 +612,15 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 if (Notificare.shared().shouldShowRequestPermissionRationale(this)) {
                     // Here we should show a dialog explaining location updates
                     builder.setMessage(R.string.alert_location_permission_rationale)
-                        .setTitle(R.string.app_name)
-                        .setCancelable(true)
-                        .setPositiveButton(R.string.button_location_permission_rationale_ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Notificare.shared().requestLocationPermission(MainActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
-                            }
-                        })
-                    .create()
-                    .show();
+                            .setTitle(R.string.app_name)
+                            .setCancelable(true)
+                            .setPositiveButton(R.string.button_location_permission_rationale_ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Notificare.shared().requestLocationPermission(MainActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
+                                }
+                            })
+                            .create()
+                            .show();
                 }
             } else {
                 Notificare.shared().requestLocationPermission(this, LOCATION_PERMISSION_REQUEST_CODE);

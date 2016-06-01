@@ -2,128 +2,138 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="re.notifica.app"
     android:versionCode="10800"
-    android:versionName="1.8.0" >
+    android:versionName="1.8.0"> <!-- <uses-permission android:name="com.android.vending.BILLING" /> -->
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="23" />
 
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="22"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="22"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- This app has permission to register and receive message -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-    <!-- PERMISSIONS REQUIRED for C2DM  -->
-    <permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <!-- PERMISSIONS REQUIRED for C2DM -->
+    <permission
+        android:name="${applicationId}.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
-    <!--<uses-permission android:name="com.android.vending.BILLING" />-->
-
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="23" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name="re.notifica.app.AppBaseApplication"
-        android:allowClearUserData="true"
+        android:name=".AppBaseApplication"
         android:allowBackup="true"
+        android:allowClearUserData="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name="re.notifica.app.MainActivity"
+            android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--<intent-filter>-->
-                <!--<action android:name="re.notifica.intent.action.NotificationOpened" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="re.notifica.intent.action.NotificationOpened" /> -->
+            <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
-        <!--<activity-->
-            <!--android:name="re.notifica.ui.NotificationActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:configChanges="keyboardHidden|orientation" />-->
+        <!-- <activity -->
+        <!-- android:name="re.notifica.ui.NotificationActivity" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- android:configChanges="keyboardHidden|orientation" /> -->
 
         <activity
             android:name="re.notifica.ui.NotificationActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:parentActivityName="re.notifica.app.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
-
         <activity
-            android:name="re.notifica.app.SignUpActivity"
+            android:name=".SignUpActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_sign_up"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="re.notifica.app.LostPassActivity"
+            android:name=".LostPassActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_lost_pass"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="re.notifica.app.ResetPassActivity"
+            android:name=".ResetPassActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_reset_pass"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/resetpassword/5489b42ff23e5815132b492a" />
+
+                <data
+                    android:host="push.notifica.re"
+                    android:pathPrefix="/oauth/resetpassword/5489b42ff23e5815132b492a"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
-            android:name="re.notifica.app.ValidateActivity"
+            android:name=".ValidateActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_validate"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="push.notifica.re" android:pathPrefix="/oauth/validate/5489b42ff23e5815132b492a" />
+
+                <data
+                    android:host="push.notifica.re"
+                    android:pathPrefix="/oauth/validate/5489b42ff23e5815132b492a"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
-            android:name="re.notifica.app.BeaconsActivity"
+            android:name=".BeaconsActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_ibeacons"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="re.notifica.app.InboxActivity"
+            android:name=".InboxActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_inbox"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="re.notifica.app.ProductsActivity"
+            android:name=".ProductsActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_products"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name="re.notifica.ui.UserPreferencesActivity"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_settings"
-            android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="re.notifica.intent.action.OpenUserPreferences" />
+
                 <category android:name="re.notifica.app" />
             </intent-filter>
         </activity>
@@ -134,11 +144,12 @@
 
      The com.google.android.c2dm.permission.SEND permission is necessary
      so only GCM services can send data messages for the app.
-   -->
+        -->
         <receiver
             android:name="re.notifica.push.gcm.PushReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
+
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <!-- Receives the registration id. -->
@@ -147,27 +158,26 @@
                 <category android:name="${applicationId}" />
             </intent-filter>
         </receiver>
-        <!--
-            Service running in the background that receives your Push Notifications
-         -->
-        <service android:name="re.notifica.push.gcm.PushService"
+        <!--             Service running in the background that receives your Push Notifications -->
+        <service
+            android:name="re.notifica.push.gcm.PushService"
             android:label="Notificare Push Service">
             <intent-filter>
+
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-
-        <service android:name="re.notifica.push.gcm.InstanceIDService"
+        <service
+            android:name="re.notifica.push.gcm.InstanceIDService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-
-        <service android:name="re.notifica.push.gcm.RegistrationService"
+        <service
+            android:name="re.notifica.push.gcm.RegistrationService"
             android:exported="false" />
-
 
         <!--
             Receiver to dispatch GCM registration, push notifications and custom push actions.
@@ -178,8 +188,8 @@
 
             Most likely you will need customized registration and dispatching; please override
             this class or the BaseIntentReceiver parent class.
-         -->
-        <receiver android:name="re.notifica.app.AppReceiver" />
+        -->
+        <receiver android:name=".AppReceiver" />
 
         <!-- API key for Google Maps -->
         <meta-data

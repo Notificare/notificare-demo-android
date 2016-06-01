@@ -6,6 +6,7 @@
     <string-array name="navigation_labels">
         <item>Notificare</item>
         <item>Products</item>
+        <item>Assets</item>
         <item>Locations</item>
         <item>Beacons</item>
         <item>User Profile</item>
@@ -15,6 +16,7 @@
     <string-array name="navigation_urls">
         <item>func:Main</item>
         <item>func:Products</item>
+        <item>func:Assets</item>
         <item>func:Map</item>
         <item>func:Beacons</item>
         <item>func:Login</item>
@@ -49,12 +51,15 @@
     <string name="title_empty_products">No products found</string>
     <string name="title_empty_inbox">No messages found</string>
     <string name="title_empty_beacons">No beacons found. Make sure your Bluetooth is enabled.</string>
+    <string name="title_search_assets">Search</string>
+    <string name="title_empty_assets">No assets found</string>
     <string name="header_user_profile">My Profile</string>
     <string name="header_user_preferences">My Info</string>
     <string name="hint_email">email</string>
     <string name="hint_pass">password</string>
     <string name="hint_name">name</string>
     <string name="hint_confirm_pass">confirm password</string>
+    <string name="hint_search_assets">input an asset group</string>
     <string name="button_sign_in">sign in</string>
     <string name="button_sign_up">create an account</string>
     <string name="button_forgot_pass">forgotten password</string>
@@ -85,5 +90,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_user_position">Your current location</string>
     <string name="alert_inapp_purchase_demo">This add-on is not available for this demo app. Please send us your contact and we will invite you to a in-app billing demo app.</string>
+    <string name="alert_storage_disabled">This add-on is not available for this demo app. Please enable the Storage Service in the Notificare Dashboard.</string>
     <string name="alert_location_permission_rationale">We will need to make use of your location to present relevant information about offers around you.</string>
 </resources>

@@ -18,8 +18,8 @@ android {
         applicationId "re.notifica.app"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 10800
-        versionName "1.8.0"
+        versionCode 10801
+        versionName "1.8.1"
     }
     buildTypes {
         release {
@@ -39,8 +39,9 @@ android {
 repositories {
     jcenter()
     maven {
-        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
+        //url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
 //        url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
+        url "file:///Users/hpinhal/Developer/Notificare/notificare-mvn-repo/snapshots"
 //        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
     }
     flatDir {
@@ -49,8 +50,9 @@ repositories {
 }
 
 dependencies {
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version:'1.8.0', ext: 'aar', transitive: true
-    compile group: 'org.altbeacon', name:'android-beacon-library', version:'2.7.1', ext: 'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.8.1-SNAPSHOT', ext: 'aar', transitive: true
+    compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.7.1', ext: 'aar', transitive: true
+    compile 'com.android.support:support-v4:23.4.0'
 }
 
 //configurations.all {
