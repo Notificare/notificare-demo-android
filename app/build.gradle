@@ -39,10 +39,10 @@ android {
 repositories {
     jcenter()
     maven {
-        //url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
+//        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
 //        url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
-        url "file:///Users/hpinhal/Developer/Notificare/notificare-mvn-repo/snapshots"
-//        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
+//        url "file:///Users/hpinhal/Developer/Notificare/notificare-mvn-repo/snapshots"
+        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
     }
     flatDir {
         dirs 'libs'
