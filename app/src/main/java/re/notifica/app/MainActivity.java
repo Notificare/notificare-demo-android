@@ -507,7 +507,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
             }
         }
 
-
+        invalidateOptionsMenu();
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
