@@ -172,9 +172,10 @@ public class AssetsFragment extends Fragment {
             if (notificareAsset.getKey() == null) {
                 imageView.setVisibility(View.GONE);
             } else {
-                if (notificareAsset.getContentType().equals("image/jpeg") ||
-                        notificareAsset.getContentType().equals("image/gif") ||
-                        notificareAsset.getContentType().equals("image/png")) {
+                if (notificareAsset.getContentType() != null &&
+                        (notificareAsset.getContentType().equals("image/jpeg") ||
+                                notificareAsset.getContentType().equals("image/gif") ||
+                                notificareAsset.getContentType().equals("image/png"))) {
                     Ion.with(imageView)
                             .load("GET", Notificare.shared().getPushApiBaseUrl() + "/asset/file/" + notificareAsset.getKey());
                 } else {
