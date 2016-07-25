@@ -32,12 +32,10 @@ import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +48,6 @@ import re.notifica.beacon.BeaconRangingListener;
 import re.notifica.billing.BillingManager;
 import re.notifica.billing.BillingResult;
 import re.notifica.billing.Purchase;
-import re.notifica.model.NotificareAction;
 import re.notifica.model.NotificareApplicationInfo;
 import re.notifica.model.NotificareAsset;
 import re.notifica.model.NotificareBeacon;
@@ -324,68 +321,73 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                     fragmentTransaction.commit();
                     getFragmentManager().executePendingTransactions();
 
-                    map = mMapFragment.getMap();
-                    if (Notificare.shared().hasLocationPermissionGranted()) {
-                        map.setMyLocationEnabled(true);
-                    }
-                    map.animateCamera(CameraUpdateFactory.zoomTo(map.getMaxZoomLevel() - 6.0f));
-                    map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+                    mMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
-                        public void onMapLoaded() {
+                        public void onMapReady(GoogleMap googleMap) {
+                            map = googleMap;
 
-                            for (Circle region : circlesList) {
-                                region.remove();
+                            if (Notificare.shared().hasLocationPermissionGranted()) {
+                                map.setMyLocationEnabled(true);
                             }
+                            map.animateCamera(CameraUpdateFactory.zoomTo(map.getMaxZoomLevel() - 6.0f));
+                            map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+                                @Override
+                                public void onMapLoaded() {
 
-                            circlesList = new ArrayList<Circle>();
+                                    for (Circle region : circlesList) {
+                                        region.remove();
+                                    }
 
-                            for (NotificareRegion region : Notificare.shared().getRegions()) {
-                                Circle circle;
-                                circle = map.addCircle(new CircleOptions()
-                                        .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
-                                        .radius(region.getDistance())
-                                        .fillColor(R.color.wildsand)
-                                        .strokeColor(0)
-                                        .strokeWidth(0));
+                                    circlesList = new ArrayList<Circle>();
 
-                                circlesList.add(circle);
-                            }
+                                    for (NotificareRegion region : Notificare.shared().getRegions()) {
+                                        Circle circle;
+                                        circle = map.addCircle(new CircleOptions()
+                                                .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
+                                                .radius(region.getDistance())
+                                                .fillColor(R.color.wildsand)
+                                                .strokeColor(0)
+                                                .strokeWidth(0));
 
+                                        circlesList.add(circle);
+                                    }
+
+                                }
+                            });
+
+
+                            map.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
+
+                                @Override
+                                public void onMyLocationChange(Location location) {
+
+                                    for (Circle region : circlesList) {
+                                        region.remove();
+                                    }
+
+                                    circlesList = new ArrayList<Circle>();
+
+                                    for (NotificareRegion region : Notificare.shared().getRegions()) {
+                                        Circle circle;
+                                        circle = map.addCircle(new CircleOptions()
+                                                .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
+                                                .radius(region.getDistance())
+                                                .fillColor(R.color.wildsand)
+                                                .strokeColor(0)
+                                                .strokeWidth(0));
+
+                                        circlesList.add(circle);
+                                    }
+
+
+                                    float zoom = map.getCameraPosition().zoom;
+
+                                    LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoom));
+                                }
+                            });
                         }
                     });
-
-
-                    map.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
-
-                        @Override
-                        public void onMyLocationChange(Location location) {
-
-                            for (Circle region : circlesList) {
-                                region.remove();
-                            }
-
-                            circlesList = new ArrayList<Circle>();
-
-                            for (NotificareRegion region : Notificare.shared().getRegions()) {
-                                Circle circle;
-                                circle = map.addCircle(new CircleOptions()
-                                        .center(new LatLng(region.getGeometry().getLatitude(), region.getGeometry().getLongitude()))
-                                        .radius(region.getDistance())
-                                        .fillColor(R.color.wildsand)
-                                        .strokeColor(0)
-                                        .strokeWidth(0));
-
-                                circlesList.add(circle);
-                            }
-
-
-                            float zoom = map.getCameraPosition().zoom;
-
-                            LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, zoom));
-                        }
-                    });
-
 
                     // update selected item and title, then close the drawer
                     mDrawerList.setItemChecked(position, true);

@@ -68,6 +68,15 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name="re.notifica.ui.PassbookActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".SignUpActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_sign_up"
