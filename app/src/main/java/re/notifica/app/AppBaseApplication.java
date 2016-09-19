@@ -27,8 +27,8 @@ public class AppBaseApplication extends Application {
 
         // The SDK supports a single optional placeholder, %s.
         // If the placeholder is provided, it will be replaced by the pass' description, if any.
-		Notificare.shared().setRelevanceText("Notificare demo: %s");
-		Notificare.shared().setRelevanceIcon(R.drawable.notificare_passbook_style);
+		//Notificare.shared().setRelevanceText("Notificare demo: %s");
+		//Notificare.shared().setRelevanceIcon(R.drawable.notificare_passbook_style);
 	}
 
 }

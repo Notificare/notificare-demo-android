@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="re.notifica.app"
-    android:versionCode="10800"
-    android:versionName="1.8.0"> <!-- <uses-permission android:name="com.android.vending.BILLING" /> -->
+    package="re.notifica.app">
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="23" />
+        android:targetSdkVersion="24" />
 
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -27,8 +25,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
-
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:name=".AppBaseApplication"
@@ -170,6 +167,7 @@
         <!--             Service running in the background that receives your Push Notifications -->
         <service
             android:name="re.notifica.push.gcm.PushService"
+            android:exported="false"
             android:label="Notificare Push Service">
             <intent-filter>
 

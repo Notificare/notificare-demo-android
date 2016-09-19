@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import re.notifica.Notificare;
 import re.notifica.model.NotificareProduct;
 
 
@@ -51,8 +52,8 @@ public class ProductsFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               NotificareProduct item = productListAdapter.getItem(position);
-                //Notificare.shared().getBillingManager().launchPurchaseFlow(ProductsActivity.this, item, ProductsActivity.this);
+                NotificareProduct item = productListAdapter.getItem(position);
+                Notificare.shared().getBillingManager().launchPurchaseFlow(getActivity(), item, (MainActivity)getActivity());
             }
         });
         getActivity().setTitle(label);
