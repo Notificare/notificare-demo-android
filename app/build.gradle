@@ -50,7 +50,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.8.3', ext: 'aar', transitive: true
+    compile group: 're.notifica', name: 'notificare-push-lib-android', version: '1.8.7', ext: 'aar', transitive: true
     compile group: 'org.altbeacon', name: 'android-beacon-library', version: '2.7.1', ext: 'aar', transitive: true
 }
 

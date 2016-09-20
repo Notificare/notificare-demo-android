@@ -68,7 +68,7 @@ public class AppReceiver extends DefaultIntentReceiver {
 			public void onSuccess(String result) {
 				if (Notificare.shared().isLocationUpdatesEnabled()) {
 					Notificare.shared().enableLocationUpdates();
-					//Notificare.shared().enableBeacons(10000);
+					Notificare.shared().enableBeacons(10000);
 				}
 				Notificare.shared().fetchDeviceTags(new NotificareCallback<List<String>>() {
 

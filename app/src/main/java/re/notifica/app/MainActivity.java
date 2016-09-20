@@ -628,20 +628,8 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 Notificare.shared().requestLocationPermission(this, LOCATION_PERMISSION_REQUEST_CODE);
             }
         }
-        Notificare.shared().fetchAssets("test", new NotificareCallback<List<NotificareAsset>>() {
-            @Override
-            public void onSuccess(List<NotificareAsset> notificareAssets) {
-                for (NotificareAsset asset : notificareAssets) {
-                    Log.d(TAG, asset.getTitle());
-                    Log.d(TAG, asset.getOriginalFileName());
-                }
-            }
 
-            @Override
-            public void onError(NotificareError notificareError) {
-                Log.e(TAG, "Error: " + notificareError.getMessage());
-            }
-        });
+        /*
 
         Notificare.shared().fetchPass("505971ff-a0ee-4977-8dfa-a579d4795b44", new NotificareCallback<NotificarePass>() {
             @Override
@@ -655,7 +643,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
             public void onError(NotificareError notificareError) {
                 Log.e(TAG, "Error: " + notificareError.getMessage());
             }
-        });
+        });*/
     }
 
     @Override
@@ -665,7 +653,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 if (Notificare.shared().checkRequestLocationPermissionResult(permissions, grantResults)) {
                     Log.i(TAG, "permission granted");
                     Notificare.shared().enableLocationUpdates();
-                    //Notificare.shared().enableBeacons(10000);
+                    Notificare.shared().enableBeacons(10000);
                 }
                 break;
         }
