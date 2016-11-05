@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="re.notifica.app">
     <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="24" />
+        android:minSdkVersion="14"
+        android:targetSdkVersion="25" />
 
     <!-- PERMISSIONS -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
@@ -20,11 +20,12 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <!-- PERMISSIONS REQUIRED for C2DM -->
-    <permission
-        android:name="${applicationId}.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+    <!--<permission-->
+        <!--android:name="${applicationId}.permission.C2D_MESSAGE"-->
+        <!--android:protectionLevel="signature" />-->
 
-    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+    <!--<uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />-->
+
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
@@ -72,6 +73,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="push.notifica.re"
+                    android:pathPrefix="/pass/forapplication/${notificareAppId}"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".SignUpActivity"
@@ -96,7 +106,7 @@
 
                 <data
                     android:host="push.notifica.re"
-                    android:pathPrefix="/oauth/resetpassword/5489b42ff23e5815132b492a"
+                    android:pathPrefix="/oauth/resetpassword/${notificareAppId}"
                     android:scheme="https" />
             </intent-filter>
         </activity>
@@ -113,7 +123,7 @@
 
                 <data
                     android:host="push.notifica.re"
-                    android:pathPrefix="/oauth/validate/5489b42ff23e5815132b492a"
+                    android:pathPrefix="/oauth/validate/${notificareAppId}"
                     android:scheme="https" />
             </intent-filter>
         </activity>
@@ -144,50 +154,69 @@
             </intent-filter>
         </activity>
 
-        <!--
-     BroadcastReceiver that will receive intents from GCM
-     services and handle them to your app's IntentService.
+        <!--<receiver-->
+            <!--android:name="re.notifica.push.gcm.PushReceiver"-->
+            <!--android:permission="com.google.android.c2dm.permission.SEND" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
+                <!--<action android:name="com.google.android.c2dm.intent.REGISTRATION" />-->
+                <!--&lt;!&ndash; Change this to be your package name &ndash;&gt;-->
+                <!--<category android:name="${applicationId}" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+        <!--<service-->
+            <!--android:name="re.notifica.push.gcm.PushService"-->
+            <!--android:exported="false"-->
+            <!--android:label="Notificare Push Service">-->
+            <!--<intent-filter>-->
 
-     The com.google.android.c2dm.permission.SEND permission is necessary
-     so only GCM services can send data messages for the app.
-        -->
-        <receiver
-            android:name="re.notifica.push.gcm.PushReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
+                <!--&lt;!&ndash; Receives the actual messages. &ndash;&gt;-->
+                <!--<action android:name="com.google.android.c2dm.intent.RECEIVE" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+        <!--<service-->
+            <!--android:name="re.notifica.push.gcm.InstanceIDService"-->
+            <!--android:exported="false">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.android.gms.iid.InstanceID" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+        <!--<service-->
+            <!--android:name="re.notifica.push.gcm.RegistrationService"-->
+            <!--android:exported="false" />-->
 
-                <!-- Receives the actual messages. -->
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <!-- Receives the registration id. -->
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <!-- Replace with your package name -->
-                <category android:name="${applicationId}" />
-            </intent-filter>
-        </receiver>
         <!--             Service running in the background that receives your Push Notifications -->
         <service
-            android:name="re.notifica.push.gcm.PushService"
+            android:name="re.notifica.push.fcm.PushService"
             android:exported="false"
             android:label="Notificare Push Service">
             <intent-filter>
 
                 <!-- Receives the actual messages. -->
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name="re.notifica.push.gcm.InstanceIDService"
+            android:name="re.notifica.push.fcm.InstanceIDService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name="re.notifica.push.gcm.RegistrationService"
+            android:name="re.notifica.push.fcm.RegistrationService"
             android:exported="false" />
 
+        <service android:name="re.notifica.push.gcm.TaskService"
+            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
+            </intent-filter>
+        </service>
+
         <!--
-            Receiver to dispatch GCM registration, push notifications and custom push actions.
+            Receiver to dispatch FCM registration, push notifications and custom push actions.
             By default, it will register the device as an anonymous user, launch the default
             Notification activity declared below when receiving notifications, and will
             launch your main activity with a "custom action" intent when a user selected

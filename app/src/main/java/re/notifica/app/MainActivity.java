@@ -42,7 +42,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import re.notifica.Notificare;
@@ -59,8 +61,9 @@ import re.notifica.model.NotificarePass;
 import re.notifica.model.NotificarePassRedemption;
 import re.notifica.model.NotificareProduct;
 import re.notifica.model.NotificareRegion;
-import re.notifica.model.NotificareUserData;
-import re.notifica.model.NotificareUserDataField;
+//import re.notifica.model.NotificareUserData;
+//import re.notifica.model.NotificareUserDataField;
+//import re.notifica.model.NotificareUserData;
 import re.notifica.support.v7.app.ActionBarBaseActivity;
 import re.notifica.ui.UserPreferencesActivity;
 
@@ -586,7 +589,7 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (Notificare.shared().getBillingManager().handleActivityResult(requestCode, resultCode, data)) {
+        if (Notificare.shared().getBillingManager() != null && Notificare.shared().getBillingManager().handleActivityResult(requestCode, resultCode, data)) {
             // Billingmanager handled the result
             inProgress = true; // wait for purchase to finish before doing other calls
         } else {
@@ -688,6 +691,30 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
 //                Log.w(TAG, "Error fetching user data");
 //            }
 //        });
+
+//        Map<String,String> params = new HashMap<>();
+//        params.put("test", "yes");
+//        JSONObject data = new JSONObject();
+//        try {
+//            data.put("deviceID", Notificare.shared().getDeviceId());
+//            data.put("type", "re.notifica.event.custom.Test");
+//        } catch (JSONException e) {
+//
+//        }
+//        Notificare.shared().doCloudRequest("POST", "/api/event", params, data, new NotificareCallback<JSONObject>() {
+//            @Override
+//            public void onSuccess(JSONObject jsonObject) {
+//                if (jsonObject != null) {
+//                    Log.i(TAG, jsonObject.toString());
+//                }
+//            }
+//
+//            @Override
+//            public void onError(NotificareError notificareError) {
+//                Log.e(TAG, notificareError.getMessage());
+//            }
+//        });
+
     }
 
     @Override

@@ -4,6 +4,24 @@
 
     <application>
         <activity
+            android:name="re.notifica.ui.PassbookActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="push-test.notifica.re"
+                    android:pathPrefix="/pass/forapplication/${notificareAppId}"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="re.notifica.app.ResetPassActivity"
             android:label="@string/title_reset_pass"
             android:screenOrientation="portrait"
@@ -12,7 +30,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="push-test.notifica.re" android:pathPrefix="/oauth/resetpassword/55aca82cf231d9e80ef851d2" />
+                <data android:scheme="https" android:host="push-test.notifica.re" android:pathPrefix="/oauth/resetpassword/${notificareAppId}" />
             </intent-filter>
         </activity>
         <activity
