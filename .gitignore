@@ -36,3 +36,4 @@ libs/
 
 # Notificare properties
 notificareconfig.properties
+google-services.json

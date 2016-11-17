@@ -205,7 +205,12 @@ public class AssetsFragment extends Fragment {
 
                             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
                             request.setTitle(asset.getTitle());
-                            request.setDescription(Html.fromHtml(asset.getDescription()));
+                            if (Build.VERSION.SDK_INT < 24) {
+                                //noinspection deprecation
+                                request.setDescription(Html.fromHtml(asset.getDescription()));
+                            } else {
+                                request.setDescription(Html.fromHtml(asset.getDescription(), Html.FROM_HTML_MODE_LEGACY));
+                            }
                             request.allowScanningByMediaScanner();
                             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, asset.getOriginalFileName());

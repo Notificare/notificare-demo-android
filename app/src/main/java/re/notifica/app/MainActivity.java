@@ -12,7 +12,6 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -61,9 +60,7 @@ import re.notifica.model.NotificarePass;
 import re.notifica.model.NotificarePassRedemption;
 import re.notifica.model.NotificareProduct;
 import re.notifica.model.NotificareRegion;
-//import re.notifica.model.NotificareUserData;
-//import re.notifica.model.NotificareUserDataField;
-//import re.notifica.model.NotificareUserData;
+import re.notifica.model.NotificareUserData;
 import re.notifica.support.v7.app.ActionBarBaseActivity;
 import re.notifica.ui.UserPreferencesActivity;
 
@@ -633,88 +630,90 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 Notificare.shared().requestLocationPermission(this, LOCATION_PERMISSION_REQUEST_CODE);
             }
         }
-//        Notificare.shared().fetchAssets("test", new NotificareCallback<List<NotificareAsset>>() {
-//            @Override
-//            public void onSuccess(List<NotificareAsset> notificareAssets) {
-//                for (NotificareAsset asset : notificareAssets) {
-//                    Log.d(TAG, asset.getTitle());
-//                    Log.d(TAG, asset.getOriginalFileName());
-//                }
-//            }
-//
-//            @Override
-//            public void onError(NotificareError notificareError) {
-//                Log.e(TAG, "Error: " + notificareError.getMessage());
-//            }
-//        });
-//
-//        Notificare.shared().fetchPass("505971ff-a0ee-4977-8dfa-a579d4795b44", new NotificareCallback<NotificarePass>() {
-//            @Override
-//            public void onSuccess(NotificarePass notificarePass) {
-//                for (NotificarePassRedemption redemption : notificarePass.getRedeemHistory()) {
-//                    Log.d(TAG, "Redemption at " + redemption.getDate() + ": " + redemption.getComments());
-//                }
-//            }
-//
-//            @Override
-//            public void onError(NotificareError notificareError) {
-//                Log.e(TAG, "Error: " + notificareError.getMessage());
-//            }
-//        });
 
-//        Notificare.shared().fetchUserData(new NotificareCallback<NotificareUserData>() {
-//            @Override
-//            public void onSuccess(NotificareUserData notificareUserData) {
-//                try {
-//                    Log.d(TAG, "Fetch user data: " + notificareUserData.toJSONObject().toString());
-//                } catch (JSONException e) {
-//                    Log.w(TAG, "Error parsing user data");
-//                }
-//                NotificareUserData newUserData = new NotificareUserData();
-//                newUserData.setValue("firstName", "Okkie");
-//                newUserData.setValue("lastName", "Dokkie");
-//                Notificare.shared().updateUserData(newUserData, new NotificareCallback<Boolean>() {
-//                    @Override
-//                    public void onSuccess(Boolean aBoolean) {
-//                        Log.d(TAG, "Successfully updated userdata");
-//                    }
-//
-//                    @Override
-//                    public void onError(NotificareError notificareError) {
-//                        Log.w(TAG, "Error updating user data");
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onError(NotificareError notificareError) {
-//                Log.w(TAG, "Error fetching user data");
-//            }
-//        });
+        if (BuildConfig.ENABLE_TEST_CALLS) {
+            Notificare.shared().fetchAssets("test", new NotificareCallback<List<NotificareAsset>>() {
+                @Override
+                public void onSuccess(List<NotificareAsset> notificareAssets) {
+                    for (NotificareAsset asset : notificareAssets) {
+                        Log.d(TAG, asset.getTitle());
+                        Log.d(TAG, asset.getOriginalFileName());
+                    }
+                }
 
-//        Map<String,String> params = new HashMap<>();
-//        params.put("test", "yes");
-//        JSONObject data = new JSONObject();
-//        try {
-//            data.put("deviceID", Notificare.shared().getDeviceId());
-//            data.put("type", "re.notifica.event.custom.Test");
-//        } catch (JSONException e) {
-//
-//        }
-//        Notificare.shared().doCloudRequest("POST", "/api/event", params, data, new NotificareCallback<JSONObject>() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                if (jsonObject != null) {
-//                    Log.i(TAG, jsonObject.toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onError(NotificareError notificareError) {
-//                Log.e(TAG, notificareError.getMessage());
-//            }
-//        });
+                @Override
+                public void onError(NotificareError notificareError) {
+                    Log.e(TAG, "Error: " + notificareError.getMessage());
+                }
+            });
 
+            Notificare.shared().fetchPass("505971ff-a0ee-4977-8dfa-a579d4795b44", new NotificareCallback<NotificarePass>() {
+                @Override
+                public void onSuccess(NotificarePass notificarePass) {
+                    for (NotificarePassRedemption redemption : notificarePass.getRedeemHistory()) {
+                        Log.d(TAG, "Redemption at " + redemption.getDate() + ": " + redemption.getComments());
+                    }
+                }
+
+                @Override
+                public void onError(NotificareError notificareError) {
+                    Log.e(TAG, "Error: " + notificareError.getMessage());
+                }
+            });
+
+            Notificare.shared().fetchUserData(new NotificareCallback<NotificareUserData>() {
+                @Override
+                public void onSuccess(NotificareUserData notificareUserData) {
+                    try {
+                        Log.d(TAG, "Fetch user data: " + notificareUserData.toJSONObject().toString());
+                    } catch (JSONException e) {
+                        Log.w(TAG, "Error parsing user data");
+                    }
+                    NotificareUserData newUserData = new NotificareUserData();
+                    newUserData.setValue("firstName", "Massimo");
+                    newUserData.setValue("lastName", "Gondoliere");
+                    Notificare.shared().updateUserData(newUserData, new NotificareCallback<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+                            Log.d(TAG, "Successfully updated userdata");
+                        }
+
+                        @Override
+                        public void onError(NotificareError notificareError) {
+                            Log.w(TAG, "Error updating user data");
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(NotificareError notificareError) {
+                    Log.w(TAG, "Error fetching user data");
+                }
+            });
+
+            Map<String,String> params = new HashMap<>();
+            params.put("test", "yes");
+            JSONObject data = new JSONObject();
+            try {
+                data.put("deviceID", Notificare.shared().getDeviceId());
+                data.put("type", "re.notifica.event.custom.Test");
+            } catch (JSONException e) {
+
+            }
+            Notificare.shared().doCloudRequest("POST", "/api/event", params, data, new NotificareCallback<JSONObject>() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {
+                    if (jsonObject != null) {
+                        Log.i(TAG, jsonObject.toString());
+                    }
+                }
+
+                @Override
+                public void onError(NotificareError notificareError) {
+                    Log.e(TAG, notificareError.getMessage());
+                }
+            });
+        }
     }
 
     @Override
@@ -724,7 +723,9 @@ public class MainActivity extends ActionBarBaseActivity implements Notificare.On
                 if (Notificare.shared().checkRequestLocationPermissionResult(permissions, grantResults)) {
                     Log.i(TAG, "permission granted");
                     Notificare.shared().enableLocationUpdates();
-                    Notificare.shared().enableBeacons(60000);
+                    if (BuildConfig.ENABLE_BEACONS) {
+                        Notificare.shared().enableBeacons(60000);
+                    }
                 }
                 break;
         }

@@ -29,8 +29,21 @@ android {
         }
     }
     productFlavors {
-        production {}
+        def BOOLEAN = "boolean"
+        def TRUE = "true"
+        def FALSE = "false"
+        def ENABLE_BILLING = "ENABLE_BILLING"
+        def ENABLE_BEACONS = "ENABLE_BEACONS"
+        def ENABLE_TEST_CALLS = "ENABLE_TEST_CALLS"
+        production {
+            buildConfigField BOOLEAN, ENABLE_BEACONS, TRUE
+            buildConfigField BOOLEAN, ENABLE_BILLING, FALSE
+            buildConfigField BOOLEAN, ENABLE_TEST_CALLS, FALSE
+        }
         apiTest {
+            buildConfigField BOOLEAN, ENABLE_BEACONS, TRUE
+            buildConfigField BOOLEAN, ENABLE_BILLING, TRUE
+            buildConfigField BOOLEAN, ENABLE_TEST_CALLS, TRUE
             applicationId "re.notifica.test.app"
             manifestPlaceholders = [ notificareAppId: "55aca82cf231d9e80ef851d2" ]
         }
@@ -41,8 +54,8 @@ android {
 repositories {
     jcenter()
     maven {
-//        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
-        url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
+        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/releases"
+//        url "file:///Users/joris/Developer/Projects/notificare-mvn-repo/releases"
 //        url "file:///Users/hpinhal/Developer/Notificare/notificare-mvn-repo/snapshots"
 //        url "https://github.com/Notificare/notificare-mvn-repo/raw/master/snapshots"
     }
