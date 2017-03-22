@@ -3,23 +3,19 @@ buildscript {
         jcenter()
     }
 
-    dependencies {
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.3.0'
-    }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "re.notifica.app"
+        applicationId "re.notifica.demo"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 10900
-        versionName "1.9.0"
+        versionCode 10904
+        versionName "1.9.4"
         manifestPlaceholders = [ notificareAppId: "5489b42ff23e5815132b492a" ]
     }
     buildTypes {
@@ -44,7 +40,7 @@ android {
             buildConfigField BOOLEAN, ENABLE_BEACONS, TRUE
             buildConfigField BOOLEAN, ENABLE_BILLING, TRUE
             buildConfigField BOOLEAN, ENABLE_TEST_CALLS, TRUE
-            applicationId "re.notifica.test.app"
+            applicationId "re.notifica.demo.test"
             manifestPlaceholders = [ notificareAppId: "55aca82cf231d9e80ef851d2" ]
         }
     }
@@ -65,13 +61,13 @@ repositories {
 }
 
 dependencies {
-    compile 're.notifica:notificare-push-lib-android:1.9.0'
-    compile 'org.altbeacon:android-beacon-library:2.9.1'
-    compile 'com.google.firebase:firebase-messaging:9.8.0'
+    compile 're.notifica:notificare-push-lib-android:1.9.4'
+    compile 'org.altbeacon:android-beacon-library:2.9.2'
+    compile 'com.google.firebase:firebase-messaging:10.2.0'
 }
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+//configurations.all {
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
 
 apply plugin: 'com.google.gms.google-services'
